@@ -1,0 +1,12 @@
+{
+  "name": "@fws/viewport3d",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Host-injected Three.js viewport and scope/API-gated plugin runtime",
+  "exports": { ".": "./index.js", "./package.json": "./package.json" },
+  "files": ["index.js", "README.md"],
+  "scripts": { "test": "node --test tests/*.test.js" },
+  "peerDependencies": { "three": ">=0.186.1 <0.188.0" },
+  "peerDependenciesMeta": { "three": { "optional": true } },
+  "engines": { "node": ">=20.19.0" }
+}
