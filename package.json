@@ -52,5 +52,8 @@
     "@fws/viewport3d": {
       "optional": true
     }
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }
