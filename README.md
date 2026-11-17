@@ -3,9 +3,8 @@
 Prismia — самостоятельная WebGL-студия и библиотека материалов. Общие инструменты
 строятся из графа 2D-текстур и настраиваемой модели освещения PBR, toon или unlit;
 заготовки — обычные редактируемые данные, а не набор отдельных брендированных
-шейдеров. Legacy SHL API и каталог остаются для совместимости с Morphia, но
-отдельная секция SHL в библиотеке студии не нужна. Это не панель Morphia: пакет
-запускается отдельно. Пакет пока локальный (`private`), публикации не было.
+шейдеров. Prismia предоставляет Morphia общий движок материалов и каталог
+пресетов. Это отдельная студия, не панель Morphia. Пакет приватный (`private`).
 
 ## Prismia Studio
 
@@ -101,7 +100,7 @@ npm переписывает GitHub-адреса на SSH, тогда настр
 ```bash
 npm ci
 npm run dev                 # Vite, адрес из терминала
-npm test                    # DAG, поверхности, API и совместимость SHL
+npm test                    # DAG, поверхности, API и каталог Prismia
 npm run build               # обновляет standalone/index.html
 npx playwright install chromium
 npm run test:studio         # GLSL, real WebGL frames, desktop/mobile, экспорт
@@ -133,8 +132,8 @@ prismia.destroy();
 state и `createScopeExchange`; взаимодействие идёт через `graph`, `view` и
 `render`, команды каналов ограничены явными списками. Реализация каждой области
 получает контекст и возвращает функцию освобождения. Собственную composition
-можно передать при создании. Публичный `fws-prismia/shaders` совместим с
-корневым SHL API, `fws-prismia/graph` предоставляет узлы, проверку и вычислитель.
+можно передать при создании. Публичный `fws-prismia/shaders` предоставляет тот же API, что и корневой
+`fws-prismia`; `fws-prismia/graph` предоставляет узлы, проверку и вычислитель.
 Все указанные входы включены в npm-архив; пакет пока приватный и не опубликован.
 
 ### Редактируемые материалы и применение в хосте
@@ -198,7 +197,7 @@ targets, сохраняет целевой framebuffer хоста и перес�
 состоянием и undo доступны через `createGraphStore` и `graph`-канал, а списки
 ключей каналов и их русские подписи — через `OUTPUT_USAGES` и `OUTPUT_LABELS`.
 
-## Установка пакета и совместимость с прежним SHL API
+## Установка пакета и API материалов
 
 Диапазон peer-зависимости — Three.js >= 0.186.1 и < 0.188.0; в этой
 сборке проверена версия 0.186.1. `three` — **peer**: хост должен использовать
@@ -246,11 +245,11 @@ shaders.dispose();
 Реестр можно расширять `registry.register({ id, label, group, build })`. `build`
 получает исходный материал и контекст; движок не строит новый пресет поверх
 предыдущего. Текстуры источника остаются собственностью хоста. Состояние выбора,
-сбор записей по целям, события, `materialSignature` и публичный фасад исходного
-SHL доступны из `fws-prismia` или `fws-prismia/shl`. Каталог отдельно доступен
+сбор записей по целям, события и `materialSignature` доступны из
+`fws-prismia`. Каталог отдельно доступен
 из `fws-prismia/presets`, свет и контроллер теней — из `fws-prismia/lighting`.
 
-Ранее поставленные SHL-пресеты для `world` и `preview` сохранены:
+В каталоге Prismia для `world` и `preview` доступны, например:
 
 * **wet-asphalt** — PBR с процедурной маской луж в мировых координатах,
   изменением шероховатости и анимированной нормальной рябью;
@@ -304,15 +303,15 @@ rimLight})` умеет `set('sunrise', {duration: 0.7})` и `update(dt)`; вст
 ## Общий viewport3d
 
 Базовая область и runtime находятся в `framework-preparatorio/src/scopes/viewport3d`.
-В этой поставке исходник каркаса находится в соседней папке, а для сборки
-используется синхронизированная копия `vendor/framework-preparatorio/`.
+Для разработки каркас устанавливается из Git-зависимости
+`framework-preparatorio`; локальная копия в проекте не нужна.
 Область в каркасе по умолчанию скрыта; конфигурация приложения явно включает
 `builtInScopes.viewport3d.enabled`. Сцена, камера, основной renderer и плагины
 используют Three.js хоста; граф материала, свет и управление остаются в
 `src/plugins/viewport3d/`. Канонический scope — `viewport3d`, прежний lookup
 `registry.get('viewport')` сохранён. Документация runtime:
-`vendor/framework-preparatorio/src/scopes/viewport3d/README.md`.
+`framework-preparatorio/src/scopes/viewport3d/README.md` установленного пакета.
 
 При использовании `fws-prismia/studio` установите `framework-preparatorio`
-версии 1.2 или новее и Three.js в приложение. Для SHL API каркас необязателен.
+версии 1.2 или новее и Three.js в приложение. Для API материалов Prismia каркас необязателен.
 Проверка: `npm run test:viewport3d` после `npm run build`.

@@ -1,5 +1,5 @@
 /**
- * Generic entry collector (/src/engine/shl/collect.js)
+ * Prismia generic material entry collector
  *
  * Тонкая прослойка между «любым Object3D» и движком: движок работает не со
  * сценой, а со списком записей `{ mesh, index, material, target }`. Собрать
@@ -35,7 +35,7 @@ export function baseMaterialsOf(mesh) {
         (material, index) =>
           material === cached[index] ||
           material?.userData?.shaderPreset !== undefined ||
-          material?.userData?.shlDerived !== undefined,
+          material?.userData?.prismiaDerived !== undefined,
       );
     if (untouched) return cached;
   }
@@ -80,8 +80,8 @@ export function collectShaderEntries(
   root.traverse((mesh) => {
     if (!mesh?.isMesh && !mesh?.isSkinnedMesh && !mesh?.isInstancedMesh) return;
     // Generated stencil masks and outline shells are not source materials.
-    // In particular, keeping outline children out of the SHL collector lets
-    // hosts safely compose the legacy engine with attachSurfaceOutlines().
+    // In particular, keeping outline children out of the Prismia collector lets
+    // hosts safely compose the material engine with attachSurfaceOutlines().
     if (mesh.userData?.isOcclusionGhost || mesh.userData?.prismiaOutline) return;
     if (!includeInvisible && mesh.visible === false) return;
     const base = baseMaterialsOf(mesh);

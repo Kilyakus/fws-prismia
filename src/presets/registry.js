@@ -1,5 +1,5 @@
 /**
- * Preset registry (/src/engine/shl/registry.js)
+ * Prismia preset registry
  *
  * Хранилище пресетов — единственное, что нужно движку, чтобы знать, *чем*
  * рисовать поверхность. Оно ничего не знает ни про Three.js-сцену, ни про

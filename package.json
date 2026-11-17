@@ -1,12 +1,11 @@
 {
   "name": "fws-prismia",
   "version": "1.0.0",
-  "description": "FWS Prismia — independent WebGL shader engine, SHL presets and studio",
+  "description": "FWS Prismia — independent WebGL shader engine, material presets and studio",
   "type": "module",
   "private": true,
   "exports": {
     ".": "./src/index.js",
-    "./shl": "./src/index.js",
     "./presets": "./src/presets/index.js",
     "./lighting": "./src/lighting/index.js",
     "./package.json": "./package.json",
@@ -31,27 +30,25 @@
     "test:viewport3d": "node tests/viewport3d.browser.cjs && node tests/viewport-discovery.browser.cjs"
   },
   "peerDependencies": {
-    "three": ">=0.186.1 <0.188.0"
+    "three": ">=0.186.1 <0.188.0",
+    "framework-preparatorio": ">=1.2.0 <2.0.0"
   },
   "devDependencies": {
     "playwright": "1.57.0",
     "three": "0.186.1",
     "vite": "6.4.6",
-    "vite-plugin-singlefile": "2.3.0"
+    "vite-plugin-singlefile": "2.3.0",
+    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git"
   },
   "engines": {
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git",
     "uix-preparatorio": "git+https://github.com/Kilyakus/uix-preparatorio.git#4daffb32111b8145ba026b44bb6c3eff76838d23"
   },
   "peerDependenciesMeta": {
     "framework-preparatorio": {
       "optional": true
     }
-  },
-  "allowScripts": {
-    "esbuild@0.25.12": true
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Shader engine (/src/engine/shl/shader-engine.js)
+ * Prismia material engine
  *
  * Механика подмены материалов: какой пресет выбран для части модели, какой
  * материал сейчас нарисован, когда его пересобрать и как вернуть исходный.
@@ -13,7 +13,7 @@
  *    только материал (шероховатость, металличность), и пресет, который
  *    настраивает только текстуры, не наследуют друг друга: после переключения
  *    получается ровно то, что этот пресет строит с чистого листа.
- * 2. Собранный материал помечается `userData.shl`, и если хост по ошибке
+ * 2. Собранный материал помечается `userData.shaderPreset` и `userData.prismiaDerived`, и если хост по ошибке
  *    передаст в движок уже собранный материал, он будет отвергнут как источник
  *    (с предупреждением) — источник берётся из таблицы привязок.
  * 3. При смене пресета предыдущий материал возвращается к исходному и
@@ -32,7 +32,7 @@ export function markDerived(material, { presetId, source, target }) {
   material.userData = {
     ...(material.userData ?? {}),
     shaderPreset: presetId,
-    shlDerived: {
+    prismiaDerived: {
       presetId,
       target: target ?? null,
       sourceUuid: source?.uuid ?? null,
@@ -44,7 +44,7 @@ export function markDerived(material, { presetId, source, target }) {
 /** Материал собран движком? */
 export function isDerivedMaterial(material) {
   return Boolean(
-    material?.userData?.shaderPreset !== undefined || material?.userData?.shlDerived,
+    material?.userData?.shaderPreset !== undefined || material?.userData?.prismiaDerived,
   );
 }
 
@@ -96,7 +96,7 @@ export class ShaderEngine {
     renderer = null,
     defaultPreset = DEFAULT_PRESET,
   } = {}) {
-    if (!registry?.get) throw new TypeError("shl: нужен реестр пресетов");
+    if (!registry?.get) throw new TypeError("Prismia: нужен реестр пресетов");
     this.#registry = registry;
     this.#renderer = renderer;
     this.#targets = normaliseTargets(targets ?? deriveTargets(registry));
@@ -256,7 +256,7 @@ export class ShaderEngine {
         binding.source === source &&
         binding.presetId === desired &&
         binding.signature === signature &&
-        binding.material?.userData?.shlDerived?.presetId === desired;
+        binding.material?.userData?.prismiaDerived?.presetId === desired;
 
       if (reusable) {
         assignMaterial(mesh, index, binding.material);
@@ -392,7 +392,7 @@ export class ShaderEngine {
     if (!isDerivedMaterial(material)) return material;
     if (binding?.source) return binding.source;
     console.warn(
-      "shl: в записи пришёл уже собранный материал — использую его как исходный",
+      "Prismia: в записи пришёл уже собранный материал — использую его как исходный",
       material.name,
     );
     return material;
@@ -412,7 +412,7 @@ export class ShaderEngine {
         index: entry.index ?? 0,
       });
     } catch (error) {
-      console.error(`shl: пресет «${presetId}» упал при сборке`, error);
+      console.error(`Prismia: пресет «${presetId}» упал при сборке`, error);
       return null;
     }
     if (!built) return null;
@@ -430,7 +430,7 @@ export class ShaderEngine {
       try {
         listener(payload);
       } catch (error) {
-        console.error(`shl: подписчик «${type}» упал`, error);
+        console.error(`Prismia: подписчик «${type}» упал`, error);
       }
     }
   }

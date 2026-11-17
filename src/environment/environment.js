@@ -1,5 +1,5 @@
 /**
- * Neutral IBL for the physically based presets (/src/engine/shl/environment.js)
+ * Neutral IBL for the physically based Prismia presets
  *
  * Карта окружения — часть механики движка, а не конкретного пресета: её просят
  * `pbr`, `skin`, `cinematic*`, и строить её на каждый материал нельзя. Кеш
@@ -83,7 +83,7 @@ export function neutralEnvironment(renderer) {
       const provided = provider(renderer);
       if (provided !== undefined) return provided;
     } catch (error) {
-      console.warn("shl: провайдер окружения упал — беру процедурную карту", error);
+      console.warn("Prismia: провайдер окружения упал — беру процедурную карту", error);
     }
   }
   if (!renderer) return fallback;
