@@ -27,18 +27,18 @@
     "build": "vite build",
     "test": "node --test tests/*.test.js",
     "test:studio": "node tests/designer.browser.cjs && node tests/surface.browser.cjs",
-    "test:viewport3d": "node tests/viewport3d.browser.cjs && node tests/viewport-discovery.browser.cjs"
+    "test:viewport3d": "node tests/viewport3d.browser.cjs && node tests/viewport-discovery.browser.cjs && node tests/framework-viewport.browser.cjs",
+    "test:graphics": "node tests/graphics.browser.cjs"
   },
   "peerDependencies": {
-    "three": ">=0.186.1 <0.188.0",
-    "framework-preparatorio": ">=1.2.0 <2.0.0"
+    "framework-preparatorio": "https://github.com/Kilyakus/framework-preparatorio",
+    "three": ">=0.186.1 <0.188.0"
   },
   "devDependencies": {
     "playwright": "1.57.0",
     "three": "0.186.1",
     "vite": "6.4.6",
-    "vite-plugin-singlefile": "2.3.0",
-    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git"
+    "vite-plugin-singlefile": "2.3.0"
   },
   "engines": {
     "node": ">=20.19.0"
@@ -50,5 +50,8 @@
     "framework-preparatorio": {
       "optional": true
     }
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }

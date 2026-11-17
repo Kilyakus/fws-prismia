@@ -103,6 +103,8 @@ npm run dev                 # Vite, адрес из терминала
 npm test                    # DAG, поверхности, API и каталог Prismia
 npm run build               # обновляет standalone/index.html
 npx playwright install chromium
+npm run test:viewport3d    # расширения и жизненный цикл области
+npm run test:graphics      # общие настройки и реальный renderer
 npm run test:studio         # GLSL, real WebGL frames, desktop/mobile, экспорт
 ```
 
@@ -312,6 +314,28 @@ rimLight})` умеет `set('sunrise', {duration: 0.7})` и `update(dt)`; вст
 `registry.get('viewport')` сохранён. Документация runtime:
 `framework-preparatorio/src/scopes/viewport3d/README.md` установленного пакета.
 
-При использовании `fws-prismia/studio` установите `framework-preparatorio`
-версии 1.2 или новее и Three.js в приложение. Для API материалов Prismia каркас необязателен.
-Проверка: `npm run test:viewport3d` после `npm run build`.
+В шапке доступны общий режим «Просмотр» с инструментом «Обзор» и подробная
+панель «Графика». Экспозиция и включение теней синхронизированы с панелью
+«Свет»; настройки графики сохраняются отдельно от JSON-проекта в
+`localStorage` под ключом `fws-prismia.viewport-graphics.v1`. При запрете
+хранилища вид работает без сохранения. Сброс в панели сбрасывает графические
+параметры, не граф материала.
+
+При использовании `fws-prismia/studio` приложение должно установить Three.js
+и **обновлённую редакцию** `framework-preparatorio` из этой поставки: прежний
+публичный commit 1.2.0 ещё не содержит новых графических экспортов. Версии в
+`package.json` сами по себе не гарантируют наличие нужного commit. Для сборки
+через Git сначала опубликуйте изменения каркаса и обновите Git-lock Prismia:
+
+```bash
+npm update --package-lock-only framework-preparatorio
+npm ci
+npm run build
+npm run test:viewport3d
+npm run test:graphics
+```
+
+Проверьте, что `node_modules/framework-preparatorio` в `package-lock.json`
+закреплён на опубликованном commit с новыми экспортами. Браузерные проверки
+требуют Chromium Playwright; `test:viewport3d` также проверяет встроенную область
+каркаса. Для API материалов Prismia каркас необязателен.
