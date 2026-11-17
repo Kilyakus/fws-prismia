@@ -44,7 +44,7 @@
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "uix-preparatorio": "git+https://github.com/Kilyakus/uix-preparatorio.git#4daffb32111b8145ba026b44bb6c3eff76838d23"
+    "uix-preparatorio": "git+https://github.com/Kilyakus/uix-preparatorio.git"
   },
   "peerDependenciesMeta": {
     "framework-preparatorio": {

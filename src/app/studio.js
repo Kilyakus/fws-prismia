@@ -60,7 +60,7 @@ export async function createPrismiaStudio({mount='#app',project=null,composition
     const initialNode=graph.value.project.nodes.find(n=>n.type!=='output');if(initialNode)graph.select(initialNode.id);const firstOutput=graph.value.project.nodes.find(n=>n.type==='output');if(firstOutput)graph.previewNode(firstOutput.id);
     studio.root.dataset.appReady='true';
     function destroy(){if(destroyed)return;destroyed=true;clearTimeout(saveTimer);abort.abort();offGraph?.();offRender?.();for(const off of disposers.reverse())try{off();}catch(error){console.warn(error);}exchange.dispose();layouts?.dispose();graph.dispose();view.dispose();renderState.dispose();studio.destroy();}
-    const api={studio,registry:built.registry,exchange,graph,view,get runtime(){return services.runtime;},get viewport3d(){return services.viewport3d;},get viewportGraphics(){return services.viewportGraphics??null;},destroy};
+    const api={studio,registry:built.registry,exchange,graph,view,get runtime(){return services.runtime;},get viewport3d(){return services.viewport3d;},get viewportGraphics(){return services.viewportGraphics??null;},get viewportEnvironment(){return services.viewportEnvironment??null;},get viewportDisplay(){return services.viewportDisplay??null;},destroy};
     if(new URLSearchParams(location.search).has('debug')){api.debug={NODE_TYPES,nodeDefaults,compileNodeFragment,validateNodeFragment,createPrismiaStudio};window.__prismiaDebug=api;}
     return api;
   }catch(error){abort.abort();for(const off of disposers.reverse())try{off();}catch{}exchange.dispose();layouts?.dispose();studio?.destroy();graph.dispose();view.dispose();renderState.dispose();throw error;}

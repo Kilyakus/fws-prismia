@@ -34,7 +34,6 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   const looks=createLookMixer({scene,renderer,hemiLight:hemi,ambientLight:ambient,keyLight:key,fillLight:fill,rimLight:rim});
   scene.environment=neutralEnvironment(renderer);
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshStandardMaterial({color:0x2d3038,roughness:.9}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
-  const grid=new THREE.GridHelper(12,24,0x737987,0x4d535c);grid.position.y=.002;grid.material.transparent=true;grid.material.opacity=.2;scene.add(grid);
   const registry=createPrismiaRegistry(),engine=new ShaderEngine({registry,renderer,targets:['preview'],defaults:{preview:'original'}});
   let sampleRoot=null,outlines=null,textures={},disposed=false,refreshTimer=0,importToken=0,version=0,libraryEvaluator=null,hasTime=false,lastTimeRefresh=0,outputSignature='';
   const clock=new THREE.Clock();
@@ -44,7 +43,7 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   function applyMaterial(){if(!sampleRoot)return;outlines?.dispose();outlines=null;engine.setSelection('preview','prismia-graph');engine.applyToObject(sampleRoot,{defaultTarget:'preview',force:true});outlines=attachSurfaceOutlines(sampleRoot,graph.value.project.surface);}
   function syncLook(s){
     looks.set(s.look,{duration:0});const p=LOOK_PROFILES[s.look];renderer.toneMappingExposure=s.exposure;key.intensity=p.key*s.key;hemi.intensity=p.hemi*s.ambient;ambient.intensity=p.ambient*s.ambient;
-    const a=s.rotation*Math.PI/180;key.position.set(-3*Math.cos(a)+4*Math.sin(a),5,4*Math.cos(a)+3*Math.sin(a));grid.visible=s.grid;controls.autoRotate=s.autoRotate;
+    const a=s.rotation*Math.PI/180;key.position.set(-3*Math.cos(a)+4*Math.sin(a),5,4*Math.cos(a)+3*Math.sin(a));controls.autoRotate=s.autoRotate;
     if(renderer.shadowMap.enabled!==s.shadows){renderer.shadowMap.enabled=s.shadows;sampleRoot?.traverse(n=>{if(!n.isMesh)return;for(const m of [...baseMaterialsOf(n),...(Array.isArray(n.material)?n.material:[n.material])])if(m)m.needsUpdate=true;});floor.material.needsUpdate=true;}
   }
   function refresh(){
@@ -112,5 +111,5 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   function snapshot(){viewport.render();renderer.domElement.toBlob(blob=>{if(blob)saveBlob(blob,'prismia-preview.png');},'image/png');}
   function resetCamera(){camera.position.set(3.3,2.6,4.2);controls.target.set(0,.9,0);controls.update();}
   return {renderer,scene,camera,engine,evaluator,registry,refresh,preview,thumbnail,exampleThumbnail,libraryNodeThumbnail,importGlb,exportMaps,snapshot,resetCamera,
-    dispose(){if(disposed)return;disposed=true;importToken++;clearTimeout(refreshTimer);offGraph();offView();offResize();viewport.disconnectResize();viewport.stop();outlines?.dispose();engine.dispose();if(sampleRoot){sampleRoot.removeFromParent();disposeObject(sampleRoot);}disposeTextures(textures);evaluator.dispose();libraryEvaluator?.dispose();scene.remove(floor,grid,hemi,ambient,key,key.target,fill,rim);floor.geometry.dispose();floor.material.dispose();grid.geometry.dispose();grid.material.dispose();scene.environment=null;disposeEnvironment(renderer);controls.dispose();}};
+    dispose(){if(disposed)return;disposed=true;importToken++;clearTimeout(refreshTimer);offGraph();offView();offResize();viewport.disconnectResize();viewport.stop();outlines?.dispose();engine.dispose();if(sampleRoot){sampleRoot.removeFromParent();disposeObject(sampleRoot);}disposeTextures(textures);evaluator.dispose();libraryEvaluator?.dispose();scene.remove(floor,hemi,ambient,key,key.target,fill,rim);floor.geometry.dispose();floor.material.dispose();scene.environment=null;disposeEnvironment(renderer);controls.dispose();}};
 }

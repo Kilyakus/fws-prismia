@@ -27,7 +27,7 @@ const assert=require('node:assert/strict');
   });
   assert.equal(result.id,'viewport3d');assert(result.same&&result.aliases);
   assert.deepEqual(result.initial,[['prismia-material-preview',true],['prismia-camera-tools',true]]);
-  assert.deepEqual(result.inactive,[true,true,0]);assert.deepEqual(result.restored,[true,true,result.initialChildren,1]);
+  assert.deepEqual(result.inactive,[true,true,1], 'the shared Studio grid is not owned by the material plugin');assert.deepEqual(result.restored,[true,true,result.initialChildren,1]);
   assert.equal(result.probe,42);assert.deepEqual(result.events,['start:42','stop:true','start:42','stop:true']);
   assert(result.after.every(p=>p[1]));assert(result.disposed);assert.equal(result.canvases,0);assert.deepEqual(errors,[]);
   console.log('Prismia shared viewport + graph scope, API gating, reactivation, ownership: PASS');
