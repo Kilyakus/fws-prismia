@@ -14,6 +14,15 @@ function makeGlb(doc,bin){let jb=Buffer.from(JSON.stringify(doc));jb=Buffer.conc
 async function imageStats(page,usage='baseColor'){
   return page.evaluate(usage=>{const d=window.__prismiaDebug;const target=d.runtime.evaluator.outputs()[usage];if(!target)return null;const a=d.runtime.evaluator.read(target).pixels;let hash=2166136261,min=255,max=0;for(let i=0;i<a.length;i+=4){hash=Math.imul(hash^a[i],16777619);hash=Math.imul(hash^a[i+1],16777619);hash=Math.imul(hash^a[i+2],16777619);min=Math.min(min,a[i],a[i+1],a[i+2]);max=Math.max(max,a[i],a[i+1],a[i+2]);}return {hash:hash>>>0,min,max,width:target.width};},usage);
 }
+// Software WebGL can complete a graph recomputation later than a fixed sleep.
+async function waitForHash(page,hash,equal=true){
+  await page.waitForFunction(({hash,equal})=>{
+    const d=window.__prismiaDebug,target=d?.runtime?.evaluator.outputs().baseColor;if(!target)return false;
+    const pixels=d.runtime.evaluator.read(target).pixels;let actual=2166136261;
+    for(let i=0;i<pixels.length;i+=4){actual=Math.imul(actual^pixels[i],16777619);actual=Math.imul(actual^pixels[i+1],16777619);actual=Math.imul(actual^pixels[i+2],16777619);}
+    return ((actual>>>0)===hash)===equal;
+  },{hash,equal},{polling:250,timeout:30000});
+}
 (async()=>{
  const {unzipSync}=await import('three/addons/libs/fflate.module.js');
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||undefined,headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
@@ -26,7 +35,7 @@ async function imageStats(page,usage='baseColor'){
  assert.equal(starter.nodes.length,4);assert.equal(starter.edges.length,2);
  assert.deepEqual(await page.evaluate(()=>Object.keys(__prismiaDebug.runtime.evaluator.outputs()).sort()),['baseColor','roughness']);
  await page.waitForFunction(()=>[...document.querySelectorAll('[data-library-cards] img')].filter(x=>x.src.startsWith('data:image')).length===15,{timeout:90000});
- assert.equal(await page.locator('.b-header-hint').count(),10);assert.equal(await page.locator('[data-library-cards] [data-resource]').count(),15);
+ assert.equal(await page.locator('.b-header-hint').count(),9);assert.equal(await page.locator('.prismia-area-viewport > .b-header .b-header-hint').count(),0);assert.equal(await page.locator('[data-library-cards] [data-resource]').count(),15);
  await page.screenshot({path:path.join(output,'prismia-overview.png')});
  // A physical value works even without its corresponding texture map; when a map exists the slider is a multiplier.
  await tab(page,'Материал');assert.ok(await page.locator('[data-metalness-base]').isVisible());assert.ok(await page.locator('[data-roughness-map]').isVisible());assert.ok(await page.locator('[data-roughness-base]').isHidden());
@@ -59,9 +68,9 @@ async function imageStats(page,usage='baseColor'){
  const initial=await imageStats(page);assert.ok(initial.max-initial.min>30,'brick base color must not be flat');
  assert.deepEqual(await page.evaluate(()=>Object.keys(__prismiaDebug.runtime.evaluator.outputs()).sort()),['ambientOcclusion','baseColor','height','metallic','normal','roughness']);
  await page.evaluate(()=>__prismiaDebug.graph.select('pattern'));
- await input(page,'[data-param="columns"]',12);await wait(page);const changed=await imageStats(page);assert.notEqual(initial.hash,changed.hash,'parameter should alter baseColor GPU pixels');
+ await input(page,'[data-param="columns"]',12);await waitForHash(page,initial.hash,false);const changed=await imageStats(page);assert.notEqual(initial.hash,changed.hash,'parameter should alter baseColor GPU pixels');
  let param=page.locator('[data-param="columns"]');assert.equal(await param.evaluate(el=>getComputedStyle(el).appearance),'none');const fill=await param.evaluate(el=>el.style.getPropertyValue('--range-fill'));assert.ok(fill.includes('%'));
- await page.locator('[data-graph-undo]').click();await wait(page);assert.equal((await imageStats(page)).hash,initial.hash,'undo restores pixels');await page.locator('[data-graph-redo]').click();await wait(page);assert.equal((await imageStats(page)).hash,changed.hash,'redo restores edited pixels');
+ await page.locator('[data-graph-undo]').click();await waitForHash(page,initial.hash);assert.equal((await imageStats(page)).hash,initial.hash,'undo restores pixels');await page.locator('[data-graph-redo]').click();await waitForHash(page,changed.hash);assert.equal((await imageStats(page)).hash,changed.hash,'redo restores edited pixels');
  console.log('CHECK 15 material thumbnails + 29 shader compiles + range + undo/redo');
  // Search, category hierarchy and local favorites use real types.
  await page.locator('[data-library-category="Генераторы"]').click();assert.ok(await page.locator('[data-library-cards] [data-resource]').count()>=5);await page.locator('[data-library-search]').fill('шум');assert.ok(await page.locator('[data-library-cards] [data-resource]').count()>0);await page.locator('[data-library-search]').fill('');

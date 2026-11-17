@@ -1,4 +1,4 @@
-import {createStudio,installRangeFillSupport,syncRangeFill,syncRangeFills,resolveConfig,serializeConfig} from 'uix-preparatorio';
+import {createStudio,installRangeFillSupport,syncRangeFill,syncRangeFills,createCustomSelect,resolveConfig,serializeConfig} from 'uix-preparatorio';
 import {mountScopeNodes} from 'framework-preparatorio';
 import {createPrismiaComposition,bindPrismiaComposition} from './registry.js';
 import {createScopeExchange} from './scope-exchange.js';
@@ -32,7 +32,7 @@ export async function createPrismiaStudio({mount='#app',project=null,composition
   let initial=project;if(!initial&&restore)try{const saved=localStorage.getItem('fws-prismia.project.v1');if(saved)initial=validateProject(JSON.parse(saved));}catch{}initial ||= createMaterialPreset('starter');
   const graph=createGraphStore(initial),view=createViewState(),renderState=createRenderState(),exchange=createScopeExchange({graph,view,render:renderState});
   let studio,layouts,offGraph,offRender,saveTimer,destroyed=false;const disposers=[],abort=new AbortController();
-  const services={viewport3d:null,viewportPlugins,viewportApis,scopeIds:built.registry.list().map(scope=>scope.id),get runtime(){return this.viewport3d?.getPlugin('prismia-material-preview')??null;},renderState,ui:{syncRangeFill,syncRangeFills},activatePanel(id){if(!studio?.panels[id])return;if(!studio.isAreaVisible(id))studio.setAreaVisible(id,true);studio.dock.activateWidget(studio.panels[id]);},message(text,error=false){const status=studio?.root.querySelector('[data-app-message]');if(status){status.textContent=text;status.classList.toggle('is-error',error);}}};
+  const services={viewport3d:null,viewportPlugins,viewportApis,viewportUi:{createCustomSelect,syncRangeFill},scopeIds:built.registry.list().map(scope=>scope.id),get runtime(){return this.viewport3d?.getPlugin('prismia-material-preview')??null;},renderState,ui:{syncRangeFill,syncRangeFills},activatePanel(id){if(!studio?.panels[id])return;if(!studio.isAreaVisible(id))studio.setAreaVisible(id,true);studio.dock.activateWidget(studio.panels[id]);},message(text,error=false){const status=studio?.root.querySelector('[data-app-message]');if(status){status.textContent=text;status.classList.toggle('is-error',error);}}};
   const loadInput=document.createElement('input');loadInput.type='file';loadInput.accept='.json,application/json';loadInput.hidden=true;
   const menus=[{label:'Файл',items:[
     {label:'Новый материал',onClick:()=>{if(confirm('Создать пустой граф? Предыдущий можно вернуть через Ctrl+Z.')){graph.load(createEmptyProject());view.set('mode','graph');services.message('Новый граф создан.');}}},

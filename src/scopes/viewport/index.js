@@ -27,7 +27,7 @@ export function activate({node,exchange,services}){
   let chrome=null,offView=()=>{},lastShadow=shadowOptions.includes(saved.lastShadow)?saved.lastShadow:'auto';
   try {
     viewport.registerPlugins([...plugins,...discovered,...services.viewportPlugins]);
-    chrome=mountViewportChrome({root:node,viewport,graphicsOptions:{settings:saved,onChange(settings){
+    chrome=mountViewportChrome({root:node,viewport,ui:services.viewportUi,graphicsOptions:{settings:saved,onChange(settings){
       if(settings.shadow!=='off')lastShadow=settings.shadow;
       try{localStorage.setItem(GRAPHICS_KEY,JSON.stringify({...settings,lastShadow}));}catch{/* private browsing */}
       // Keep the existing lighting panel in sync with the common controls.

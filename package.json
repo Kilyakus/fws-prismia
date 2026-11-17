@@ -34,11 +34,11 @@
     "three": ">=0.186.1 <0.188.0"
   },
   "devDependencies": {
+    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git",
     "playwright": "1.57.0",
     "three": "0.186.1",
     "vite": "6.4.6",
-    "vite-plugin-singlefile": "2.3.0",
-    "framework-preparatorio": "https://github.com/Kilyakus/framework-preparatorio"
+    "vite-plugin-singlefile": "2.3.0"
   },
   "engines": {
     "node": ">=20.19.0"
