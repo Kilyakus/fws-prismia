@@ -31,25 +31,23 @@
     "test:viewport3d": "node tests/viewport3d.browser.cjs && node tests/viewport-discovery.browser.cjs"
   },
   "peerDependencies": {
-    "three": ">=0.186.1 <0.188.0",
-    "@fws/viewport3d": ">=1.0.0 <2.0.0"
+    "three": ">=0.186.1 <0.188.0"
   },
   "devDependencies": {
     "playwright": "1.57.0",
     "three": "0.186.1",
     "vite": "6.4.6",
-    "vite-plugin-singlefile": "2.3.0",
-    "@fws/viewport3d": "file:vendor/viewport3d"
+    "vite-plugin-singlefile": "2.3.0"
   },
   "engines": {
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git#c95396ba58ddb740216273a0c555f546c9c82794",
+    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git",
     "uix-preparatorio": "git+https://github.com/Kilyakus/uix-preparatorio.git#4daffb32111b8145ba026b44bb6c3eff76838d23"
   },
   "peerDependenciesMeta": {
-    "@fws/viewport3d": {
+    "framework-preparatorio": {
       "optional": true
     }
   },

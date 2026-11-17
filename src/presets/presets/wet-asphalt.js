@@ -3,7 +3,7 @@ import { proceduralSurface } from '../_lib/procedural.js';
 
 export default {
   id: 'wet-asphalt', label: 'Мокрый асфальт', group: 'world', order: 40,
-  targets: ['world', 'preview'],
+  // A surface can be used on world geometry, characters, clothing or previews.
   description: 'PBR: процедурные лужи в мировых координатах, шероховатость и анимированная рябь. Отражает IBL; это не SSR.',
   build: (source, ctx) => proceduralSurface(makePhysical(source, {
     tag: 'wet-asphalt', roughness: 0.83, metalness: 0.02, clearcoat: 0.22,

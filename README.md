@@ -303,17 +303,16 @@ rimLight})` умеет `set('sunrise', {duration: 0.7})` и `update(dt)`; вст
 
 ## Общий viewport3d
 
-3D-область теперь использует общий пакет `@fws/viewport3d` из `vendor/viewport3d/`.
-Сцена, камера, canvas, renderer, изменение размера и жизненный цикл расширений
-общие для трёх студий; граф материала, свет и инструменты камеры — плагины
-`src/plugins/viewport3d/`. Канонический id области — `viewport3d`; прежний
-`areaId` и lookup `registry.get('viewport')` сохранены. Подробнее о написании
-расширений и владении ресурсами — в `vendor/viewport3d/README.md`. При
-программном создании студии используются опции `viewportPlugins` и
-`viewportApis`, а экземпляр доступен как `studio.viewport3d`.
+Базовая область и runtime находятся в `framework-preparatorio/src/scopes/viewport3d`.
+В этой поставке исходник каркаса находится в соседней папке, а для сборки
+используется синхронизированная копия `vendor/framework-preparatorio/`.
+Область в каркасе по умолчанию скрыта; конфигурация приложения явно включает
+`builtInScopes.viewport3d.enabled`. Сцена, камера, основной renderer и плагины
+используют Three.js хоста; граф материала, свет и управление остаются в
+`src/plugins/viewport3d/`. Канонический scope — `viewport3d`, прежний lookup
+`registry.get('viewport')` сохранён. Документация runtime:
+`vendor/framework-preparatorio/src/scopes/viewport3d/README.md`.
 
-В npm-пакете Prismia `@fws/viewport3d` — необязательный peer: для SHL API он
-не нужен, а при использовании `fws-prismia/studio` установите приложенный
-`fws-viewport3d-1.0.0.tgz` в хост. Пакет принимает Three.js хоста и не
-создаёт его отдельный экземпляр. Проверка: `npm run test:viewport3d` после
-`npm run build` и установки браузера Playwright.
+При использовании `fws-prismia/studio` установите `framework-preparatorio`
+версии 1.2 или новее и Three.js в приложение. Для SHL API каркас необязателен.
+Проверка: `npm run test:viewport3d` после `npm run build`.

@@ -6,10 +6,12 @@ const loaders={
  outputs:()=>import('../scopes/outputs/index.js'),material:()=>import('../scopes/material/index.js'),lighting:()=>import('../scopes/lighting/index.js'),scene:()=>import('../scopes/scene/index.js'),
 };
 export const PRISMIA_ENGINES=Object.freeze(Object.entries(passports).map(([key,passport])=>Object.freeze({id:passport.id,title:passport.label,kind:'scope',plugins:Object.freeze({scopeDefinitions:Object.freeze([passport]),loaders:Object.freeze([])}),load:loaders[key]})));
-export function createPrismiaComposition({engines=PRISMIA_ENGINES,pluginScopes=[],pluginLoaders=[]}={}){
+// A built-in area is hidden unless this application explicitly enables it.
+export const PRISMIA_BUILT_IN_SCOPES=Object.freeze({viewport3d:Object.freeze({enabled:true})});
+export function createPrismiaComposition({engines=PRISMIA_ENGINES,pluginScopes=[],pluginLoaders=[],builtInScopes=PRISMIA_BUILT_IN_SCOPES}={}){
   const baseRegistry=createScopeRegistry();
   // Compatibility lookup; enumeration and plugin requirements use viewport3d.
-  const registry=Object.freeze({...baseRegistry,get:id=>baseRegistry.get(id==='viewport'?'viewport3d':id)});const composition=registerScopeDefinitions(registry,{engines,pluginScopes,preferred:Object.values(passports).map(p=>p.id),engineOrder:Object.values(passports).map(p=>p.id)});
+  const registry=Object.freeze({...baseRegistry,get:id=>baseRegistry.get(id==='viewport'?'viewport3d':id)});const composition=registerScopeDefinitions(registry,{engines,pluginScopes,builtInScopes,preferred:Object.values(passports).map(p=>p.id),engineOrder:Object.values(passports).map(p=>p.id)});
   registerContributions(composition.engines,composition.scopes);
   return {...composition,registry,pluginLoaders};
 }

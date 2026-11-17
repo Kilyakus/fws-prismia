@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createViewport3D} from '@fws/viewport3d';
+import {createViewport3D} from 'framework-preparatorio/scopes/viewport3d';
 import {passports} from '../passports.js';
 import plugins from '../../plugins/viewport3d/index.js';
 
