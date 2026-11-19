@@ -1,9 +1,9 @@
 import {createScopeRegistry,registerScopeDefinitions,registerContributions,loadEnginePlugins,bindScopeImplementations} from 'framework-preparatorio';
-import {passports} from '../scopes/passports.js';
+import {passports} from '../studio/scopes/passports.js';
 const loaders={
- library:()=>import('../scopes/library/index.js'),viewport:()=>import('../scopes/viewport/index.js'),preview:()=>import('../scopes/preview/index.js'),
- graph:()=>import('../scopes/graph/index.js'),code:()=>import('../scopes/code/index.js'),properties:()=>import('../scopes/properties/index.js'),
- outputs:()=>import('../scopes/outputs/index.js'),material:()=>import('../scopes/material/index.js'),lighting:()=>import('../scopes/lighting/index.js'),scene:()=>import('../scopes/scene/index.js'),
+ library:()=>import('../studio/scopes/library/index.js'),viewport:()=>import('../studio/scopes/viewport/index.js'),preview:()=>import('../studio/scopes/preview/index.js'),
+ graph:()=>import('../studio/scopes/graph/index.js'),code:()=>import('../studio/scopes/code/index.js'),properties:()=>import('../studio/scopes/properties/index.js'),
+ outputs:()=>import('../studio/scopes/outputs/index.js'),material:()=>import('../studio/scopes/material/index.js'),lighting:()=>import('../studio/scopes/lighting/index.js'),scene:()=>import('../studio/scopes/scene/index.js'),
 };
 export const PRISMIA_ENGINES=Object.freeze(Object.entries(passports).map(([key,passport])=>Object.freeze({id:passport.id,title:passport.label,kind:'scope',plugins:Object.freeze({scopeDefinitions:Object.freeze([passport]),loaders:Object.freeze([])}),load:loaders[key]})));
 // A built-in area is hidden unless this application explicitly enables it.

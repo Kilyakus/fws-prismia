@@ -2,12 +2,12 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {zipSync,strToU8} from 'three/addons/libs/fflate.module.js';
-import {ShaderEngine,createPrismiaRegistry,neutralEnvironment,disposeEnvironment,createLookMixer,LOOK_PROFILES,baseMaterialsOf} from '../../index.js';
-import {GraphEvaluator,pixelsToCanvas,createOutputTextures,createGraphMaterial} from '../../graph/webgl.js';
-import {createMaterialPreset} from '../../materials/material-presets.js';
-import {attachSurfaceOutlines} from '../../materials/surface.js';
-import {createEmptyProject} from '../../graph/document.js';
-import {NODE_TYPES,nodeDefaults} from '../../graph/nodes.js';
+import {ShaderEngine,createPrismiaRegistry,neutralEnvironment,disposeEnvironment,createLookMixer,LOOK_PROFILES,baseMaterialsOf} from '../../app/main.js';
+import {GraphEvaluator,pixelsToCanvas,createOutputTextures,createGraphMaterial} from '../../app/engine/prismia/graph/webgl.js';
+import {createMaterialPreset} from '../../app/engine/prismia/materials/material-presets.js';
+import {attachSurfaceOutlines} from '../../app/engine/prismia/materials/surface.js';
+import {createEmptyProject} from '../../app/engine/prismia/graph/document.js';
+import {NODE_TYPES,nodeDefaults} from '../../app/engine/prismia/graph/nodes.js';
 
 const saveBlob=(blob,name)=>{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
 // Some Chromium file:// builds discard a non-ASCII download filename.

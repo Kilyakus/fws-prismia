@@ -5,16 +5,17 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./src/index.js",
-    "./presets": "./src/presets/index.js",
-    "./lighting": "./src/lighting/index.js",
+    ".": "./src/app/main.js",
+    "./presets": "./src/app/engine/prismia/presets/index.js",
+    "./lighting": "./src/app/engine/prismia/lighting/index.js",
     "./package.json": "./package.json",
     "./scopes": "./api/scopes.js",
-    "./shaders": "./src/index.js",
+    "./shaders": "./src/app/main.js",
     "./graph": "./api/graph.js",
     "./materials": "./api/materials.js",
     "./studio": "./api/studio.js",
-    "./styles.css": "./src/web/designer.css"
+    "./styles.css": "./src/web/assets/css/designer.css",
+    "./material-builders": "./src/app/engine/prismia/presets/_lib/materials.js"
   },
   "files": [
     "api/",
@@ -28,30 +29,29 @@
     "test": "node --test tests/*.test.js",
     "test:studio": "node tests/designer.browser.cjs && node tests/surface.browser.cjs",
     "test:viewport3d": "node tests/viewport3d.browser.cjs && node tests/viewport-discovery.browser.cjs && node tests/framework-viewport.browser.cjs",
-    "test:graphics": "node tests/graphics.browser.cjs"
+    "test:viewport-settings": "node tests/viewport-settings.browser.cjs",
+    "test:graphics": "node tests/graphics.browser.cjs && node tests/graphics-mobile.browser.cjs"
   },
   "peerDependencies": {
-    "three": ">=0.186.1 <0.188.0"
+    "three": ">=0.186.1 <0.188.0",
+    "framework-preparatorio": ">=1.2.0 <2.0.0"
   },
   "devDependencies": {
-    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git",
     "playwright": "1.57.0",
     "three": "0.186.1",
     "vite": "6.4.6",
-    "vite-plugin-singlefile": "2.3.0"
+    "vite-plugin-singlefile": "2.3.0",
+    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git"
   },
   "engines": {
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "uix-preparatorio": "git+https://github.com/Kilyakus/uix-preparatorio.git"
+    "uix-preparatorio": "git+https://github.com/Kilyakus/uix-preparatorio.git#4daffb32111b8145ba026b44bb6c3eff76838d23"
   },
   "peerDependenciesMeta": {
     "framework-preparatorio": {
       "optional": true
     }
-  },
-  "allowScripts": {
-    "esbuild@0.25.12": true
   }
 }

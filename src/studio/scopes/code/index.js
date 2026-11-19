@@ -1,6 +1,6 @@
 import {passports} from '../passports.js';
-import {NODE_TYPES} from '../../graph/nodes.js';
-import {compileNodeFragment,validateNodeFragment} from '../../graph/compiler.js';
+import {NODE_TYPES} from '../../../app/engine/prismia/graph/nodes.js';
+import {compileNodeFragment,validateNodeFragment} from '../../../app/engine/prismia/graph/compiler.js';
 export function activate({node,exchange,services}){
   const graph=exchange.channel('graph'),abort=new AbortController(),signal=abort.signal,editor=node.querySelector('[data-code-editor]'),apply=node.querySelector('[data-code-apply]'),error=node.querySelector('[data-code-error]');let selected=null,lastCode='';
   const off=graph.subscribe((s,event)=>{const n=s.project.nodes.find(x=>x.id===s.selected);selected=n||null;const custom=n?.type==='custom';node.querySelector('[data-code-title]').textContent=n?`${NODE_TYPES[n.type].label} · GLSL`:'GLSL узла';node.querySelector('[data-code-note]').textContent=!n?'Выберите узел графа.':custom?'Функция vec4 prismNode(vec2 uv). Доступны tex_source, tex_mask, uTexel, uSeed и uTime.':'Генерируемый исходник этого прохода доступен для просмотра и экспорта. Для своего кода добавьте узел GLSL.';

@@ -18,11 +18,11 @@ const {resolve}=require('node:path');
   await page.goto(url+'/__viewport-test');
   await page.addStyleTag({url:url+'/node_modules/uix-preparatorio/src/web/assets/css/base.css'});
   await page.addStyleTag({url:url+'/node_modules/uix-preparatorio/src/web/assets/css/components.css'});
-  await page.addStyleTag({url:url+'/node_modules/framework-preparatorio/src/scopes/viewport3d/styles.css'});
+  await page.addStyleTag({url:url+'/node_modules/framework-preparatorio/src/web/assets/css/viewport3d.css'});
   await page.evaluate(async()=>{
     const THREE=await import('/node_modules/three/build/three.module.js');
     const {createCustomSelect,syncRangeFill}=await import('/node_modules/uix-preparatorio/src/app/main.js');
-    const {createViewport3DScope}=await import('/node_modules/framework-preparatorio/src/scopes/viewport3d/index.js');
+    const {createViewport3DScope}=await import('/node_modules/framework-preparatorio/src/studio/scopes/viewport3d/index.js');
     const scope=createViewport3DScope({enabled:true}),host=document.querySelector('#host');host.innerHTML=scope.template;
     window.__orbitChanges=0;window.__invalidations=0;window.__hostInvalidations=0;window.__assetDisposals=0;window.__externalEnable=true;
     window.__builtin=scope.activate({node:host.querySelector('[data-viewport3d-scope]'),viewport3d:{
@@ -99,7 +99,7 @@ const {resolve}=require('node:path');
   const rollback=await page.evaluate(async()=>{
     const THREE=await import('/node_modules/three/build/three.module.js');
     const {createCustomSelect,syncRangeFill}=await import('/node_modules/uix-preparatorio/src/app/main.js');
-    const {createViewport3DScope}=await import('/node_modules/framework-preparatorio/src/scopes/viewport3d/index.js');
+    const {createViewport3DScope}=await import('/node_modules/framework-preparatorio/src/studio/scopes/viewport3d/index.js');
     const scope=createViewport3DScope({enabled:true}),host=document.querySelector('#host');host.innerHTML=scope.template;
     let count=0,error='';
     try{scope.activate({node:host.querySelector('[data-viewport3d-scope]'),viewport3d:{THREE,loop:false,ui:{syncRangeFill,createCustomSelect(config){if(++count===4)throw Error('test ui failure');return createCustomSelect(config);}}}});}catch(e){error=e.message;}

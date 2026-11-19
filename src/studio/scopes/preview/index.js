@@ -1,5 +1,5 @@
 import {passports} from '../passports.js';
-import {NODE_TYPES,outputUsage,OUTPUT_LABELS} from '../../graph/nodes.js';
+import {NODE_TYPES,outputUsage,OUTPUT_LABELS} from '../../../app/engine/prismia/graph/nodes.js';
 export function activate({node,exchange,services}){
   const graph=exchange.channel('graph'),render=exchange.channel('render'),abort=new AbortController(),signal=abort.signal;
   const select=node.querySelector('[data-preview-select]'),canvas=node.querySelector('[data-preview-canvas]'),empty=node.querySelector('.p-preview-empty'),frame=node.querySelector('[data-preview-frame]');

@@ -1,6 +1,6 @@
 import {passports} from '../passports.js';
-import {SURFACE_PRESETS} from '../../materials/surface.js';
-import {outputUsage} from '../../graph/nodes.js';
+import {SURFACE_PRESETS} from '../../../app/engine/prismia/materials/surface.js';
+import {outputUsage} from '../../../app/engine/prismia/graph/nodes.js';
 export function activate({node,exchange,services}){
   const graph=exchange.channel('graph'),abort=new AbortController(),signal=abort.signal;
   const style=node.querySelector('[data-surface-style]');

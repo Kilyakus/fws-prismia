@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {NODE_TYPES,OUTPUT_USAGES,nodeDefaults,outputUsage,MATERIAL_EXAMPLES,createExample,createEmptyProject,validateProject,topologicalNodes,createGraphStore,compileNodeFragment,PROJECT_FORMAT} from '../api/graph.js';
 import {createPrismiaComposition,bindPrismiaComposition,createScopeExchange,createViewState,createRenderState,PRISMIA_SCOPE_DEFINITIONS} from '../api/scopes.js';
-import {createPrismiaRegistry,ShaderEngine} from '../src/index.js';
+import {createPrismiaRegistry,ShaderEngine} from '../src/app/main.js';
 
 test('all ten material recipes are valid real multi-output graphs',()=>{
   assert.equal(MATERIAL_EXAMPLES.length,10);assert.ok(Object.keys(NODE_TYPES).length>=25);

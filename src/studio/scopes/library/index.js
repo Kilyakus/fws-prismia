@@ -1,7 +1,7 @@
 import {passports} from '../passports.js';
-import {NODE_TYPES,NODE_CATEGORIES} from '../../graph/nodes.js';
-import {MATERIAL_PRESETS,createMaterialPreset} from '../../materials/material-presets.js';
-import {SURFACE_PRESETS} from '../../materials/surface.js';
+import {NODE_TYPES,NODE_CATEGORIES} from '../../../app/engine/prismia/graph/nodes.js';
+import {MATERIAL_PRESETS,createMaterialPreset} from '../../../app/engine/prismia/materials/material-presets.js';
+import {SURFACE_PRESETS} from '../../../app/engine/prismia/materials/surface.js';
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;};
 const iconFor=type=>({color:'◉',value:'◑',noise:'▒',cells:'◌',gradient:'◧',checker:'▦',bricks:'▤',weave:'▥',waves:'≈',shape:'◇',bitmap:'▧',blend:'◒',levels:'☷',gradientmap:'▨',posterize:'▥',threshold:'◒',invert:'◐',grayscale:'◔',blur:'░',sharpen:'✧',edge:'◈',transform:'↻',warp:'〰',normal:'◩',ao:'◕',channel:'☰',combine:'⊞',output:'↗',custom:'{}'})[type]||'◈';
 export function activate({node,exchange,services}){

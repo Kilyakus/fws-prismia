@@ -1,5 +1,5 @@
 import {passports} from '../passports.js';
-import {NODE_TYPES,OUTPUT_LABELS} from '../../graph/nodes.js';
+import {NODE_TYPES,OUTPUT_LABELS} from '../../../app/engine/prismia/graph/nodes.js';
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;};
 export function activate({node,exchange,services}){
   const graph=exchange.channel('graph'),abort=new AbortController(),signal=abort.signal,host=node.querySelector('[data-node-properties]'),exposedHost=node.querySelector('[data-exposed-properties]');

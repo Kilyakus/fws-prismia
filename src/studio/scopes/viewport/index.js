@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import {createViewport3D,mountViewportChrome,discoverViewportEnvironments} from 'framework-preparatorio/scopes/viewport3d';
 import {passports} from '../passports.js';
-import plugins from '../../plugins/viewport3d/index.js';
+import plugins from '../../../plugins/viewport3d/index.js';
 
 // Add a file exporting a descriptor to extensions/ or inject one via the host.
 let discovered=[];
-try { discovered=Object.values(import.meta.glob('../../plugins/viewport3d/extensions/*.js',{eager:true,import:'default'})); }
+try { discovered=Object.values(import.meta.glob('../../../plugins/viewport3d/extensions/*.js',{eager:true,import:'default'})); }
 catch(error) { if(typeof window!=='undefined')throw error; }
 const GRAPHICS_KEY='fws-prismia.viewport-graphics.v1';
 const SECTIONS_KEY='fws-prismia.viewport-sections.v1',ENVIRONMENT_KEY='fws-prismia.viewport-environment.v1';
@@ -13,8 +13,8 @@ const readObject=key=>{try{const value=JSON.parse(localStorage.getItem(key)||'{}
 const saveObject=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));}catch{/* private browsing */}};
 let discoveredWorlds=[];
 try { discoveredWorlds=discoverViewportEnvironments({
-  manifests:import.meta.glob('../../plugins/worlds/*/manifest.json',{eager:true,import:'default'}),
-  entries:import.meta.glob('../../plugins/worlds/*/*.js'),
+  manifests:import.meta.glob('../../../plugins/worlds/*/manifest.json',{eager:true,import:'default'}),
+  entries:import.meta.glob('../../../plugins/worlds/*/*.js'),
 }); } catch(error) {if(typeof window!=='undefined')throw error;}
 const readGraphics=()=>{try{return JSON.parse(localStorage.getItem(GRAPHICS_KEY)||'{}')||{};}catch{return {};}};
 

@@ -99,7 +99,7 @@ Substance 3D Designer, а не эквивалент Adobe. Форматы **SBS/
 ### Разработка и проверки
 
 Нужны Node.js >= 20.19, npm и Git. При первой установке нужен доступ к npm и
-GitHub; Git-зависимости Preparatorio закреплены на коммитах. В ряде окружений
+GitHub; каркас из этой поставки сначала нужно опубликовать и заново разрешить предварительный lockfile. В ряде окружений
 npm переписывает GitHub-адреса на SSH, тогда настройте HTTPS вместо SSH либо
 предоставьте доступ к GitHub. Готовый HTML от установки не зависит.
 
@@ -256,6 +256,10 @@ shaders.dispose();
 сбор записей по целям, события и `materialSignature` доступны из
 `fws-prismia`. Каталог отдельно доступен
 из `fws-prismia/presets`, свет и контроллер теней — из `fws-prismia/lighting`.
+Подпуть `fws-prismia/material-builders` экспортирует общие построители
+материалов и градиентов для адаптеров; Rephlexia использует его, сохраняя
+свои авторские toon-градиенты. Этот экспорт необходимо опубликовать вместе
+с остальным снимком Prismia.
 
 В каталоге Prismia для `world` и `preview` доступны, например:
 
@@ -335,7 +339,9 @@ rimLight})` умеет `set('sunrise', {duration: 0.7})` и `update(dt)`; вст
 через Git сначала опубликуйте изменения каркаса и обновите Git-lock Prismia:
 
 ```bash
-npm update --package-lock-only framework-preparatorio
+mv package-lock.json package-lock.provisional.json  # сохранить старый lockfile
+npm install --package-lock-only --ignore-scripts
+# проверить настоящий commit каркаса в новом lockfile
 npm ci
 npm run build
 npm run test:viewport3d

@@ -1,5 +1,5 @@
 import {passports} from '../passports.js';
-import {outputUsage,OUTPUT_USAGES,OUTPUT_LABELS} from '../../graph/nodes.js';
+import {outputUsage,OUTPUT_USAGES,OUTPUT_LABELS} from '../../../app/engine/prismia/graph/nodes.js';
 const LABEL=Object.freeze(Object.fromEntries(OUTPUT_USAGES.map(key=>[key,`${OUTPUT_LABELS[key]} · ${key}`])));
 export function activate({node,exchange,services}){
   const graph=exchange.channel('graph'),abort=new AbortController(),signal=abort.signal,list=node.querySelector('[data-outputs-list]'),status=node.querySelector('[data-export-status]');

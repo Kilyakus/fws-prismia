@@ -6,18 +6,20 @@ import {
   PRISMIA_VERSION, ShaderEngine, createPrismiaRegistry, collectShaderEntries,
   baseMaterialsOf, resetBaseMaterials, markDerived, isDerivedMaterial,
   DirectionalShadowVolume, LOOK_PROFILES, createLookMixer,
-} from '../src/index.js';
+} from '../src/app/main.js';
 
 test('public package entry points expose a single Prismia implementation', async () => {
   const pkg=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8'));
   assert.equal(PRISMIA_VERSION,pkg.version);
   assert.deepEqual(Object.keys(pkg.exports).sort(),[
-    '.', './graph', './lighting', './materials', './package.json', './presets',
+    '.', './graph', './lighting', './material-builders', './materials', './package.json', './presets',
     './scopes', './shaders', './studio', './styles.css',
   ].sort());
   const root=await import('fws-prismia'), shaders=await import('fws-prismia/shaders');
   assert.equal(root.ShaderEngine,ShaderEngine);assert.equal(shaders.ShaderEngine,ShaderEngine);
   assert.equal(root.createPrismiaRegistry,createPrismiaRegistry);
+  const builders=await import('fws-prismia/material-builders');
+  assert.equal(typeof builders.makeStandard,'function');assert.equal(typeof builders.makeToon,'function');
 });
 
 test('source snapshots and Prismia tags stay correct when the host replaces a material', () => {

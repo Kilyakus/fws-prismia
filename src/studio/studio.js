@@ -1,12 +1,12 @@
 import {createStudio,installRangeFillSupport,syncRangeFill,syncRangeFills,createCustomSelect,resolveConfig,serializeConfig} from 'uix-preparatorio';
 import {mountScopeNodes} from 'framework-preparatorio';
-import {createPrismiaComposition,bindPrismiaComposition} from './registry.js';
-import {createScopeExchange} from './scope-exchange.js';
-import {createViewState,createRenderState} from './state.js';
-import {createGraphStore,createEmptyProject,validateProject} from '../graph/document.js';
-import {createMaterialPreset} from '../materials/material-presets.js';
-import {NODE_TYPES,nodeDefaults} from '../graph/nodes.js';
-import {compileNodeFragment,validateNodeFragment} from '../graph/compiler.js';
+import {createPrismiaComposition,bindPrismiaComposition} from '../app/registry.js';
+import {createScopeExchange} from '../app/scope-exchange.js';
+import {createViewState,createRenderState} from '../app/state.js';
+import {createGraphStore,createEmptyProject,validateProject} from '../app/engine/prismia/graph/document.js';
+import {createMaterialPreset} from '../app/engine/prismia/materials/material-presets.js';
+import {NODE_TYPES,nodeDefaults} from '../app/engine/prismia/graph/nodes.js';
+import {compileNodeFragment,validateNodeFragment} from '../app/engine/prismia/graph/compiler.js';
 
 const tab=(...ids)=>({type:'tab-area',widgets:ids,currentIndex:0});
 const wide={type:'split-area',orientation:'horizontal',sizes:[.215,.545,.24],children:[tab('library'),
