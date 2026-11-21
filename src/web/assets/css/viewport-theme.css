@@ -1,0 +1,40 @@
+/* Визуальная тема viewport принадлежит приложению. Framework задаёт геометрию. */
+.fws-viewport-header { flex-wrap: wrap; height: auto; min-height: 26px; }
+.fws-viewport-header .v3d-navigation { gap: 1px; }
+.fws-viewport-header .v3d-navigation button { padding: 0 3px; }
+.fws-viewport-header [data-v3d-zoom-reset] { min-width: 38px; font-variant-numeric: tabular-nums; }
+.fws-viewport-header .v3d-navigation svg, .fws-viewport-header .v3d-graphics-toggle svg { width: 14px; height: 14px; }
+.fws-viewport-header .v3d-graphics-toggle { min-width: 24px; width: 24px; padding: 0; }
+.fws-viewport-menu:not([hidden]) { display: block; }
+.fws-viewport-menu { width: 320px; max-width: calc(100vw - 16px); min-width: 0; padding: 6px; color: var(--b-text); font-family: inherit; font-size: 11px; line-height: 1.4; }
+.fws-viewport-menu .v3d-section { margin: 4px 0; border: 1px solid var(--b-line); border-radius: 3px; background: var(--b-panel); color: var(--b-text); }
+.fws-viewport-menu .v3d-section-heading { min-height: 24px; background: var(--b-header); }
+.fws-viewport-menu .v3d-section-toggle { gap: 5px; padding: 4px 6px; border: 0; background: transparent; color: var(--b-text); font-family: inherit; font-size: 11px; font-weight: 600; line-height: 1.3; cursor: pointer; }
+.fws-viewport-menu .v3d-section-toggle:hover { background: var(--b-header-hover); }
+.fws-viewport-menu .v3d-section-arrow { color: var(--b-text-dim); transition: transform .12s; }
+.fws-viewport-menu .v3d-section-actions { padding: 3px 5px; }
+.fws-viewport-menu .v3d-section-actions button, .fws-viewport-menu .v3d-retry-gpu { padding: 3px 7px; border: 1px solid var(--b-border); border-radius: 3px; background: var(--b-widget); color: var(--b-text); font: inherit; cursor: pointer; }
+.fws-viewport-menu .v3d-section-actions button:hover, .fws-viewport-menu .v3d-retry-gpu:hover { background: var(--b-widget-hover); }
+.fws-viewport-menu .v3d-section-body { padding: 5px 7px; border-top: 1px solid var(--b-line); }
+.fws-viewport-menu .v3d-check { gap: 6px; margin: 4px 0; color: var(--b-text-dim); }
+.fws-viewport-menu .v3d-check input { flex: none; accent-color: var(--b-accent); }
+.fws-viewport-menu .v3d-field-label { margin-bottom: 4px; color: var(--b-text-faint); font-size: 10px; }
+.fws-viewport-menu .v3d-map-options { gap: 3px; }
+.fws-viewport-menu .v3d-map-option { padding: 4px 6px; border: 1px solid var(--b-border); border-radius: 3px; background: var(--b-widget); color: var(--b-text); font: inherit; cursor: pointer; }
+.fws-viewport-menu .v3d-map-option[aria-pressed=true] { background: var(--b-accent); color: var(--b-bg); }
+.fws-viewport-menu .v3d-graphics details { padding: 0 0 7px; border-top: 1px solid var(--b-line); }
+.fws-viewport-menu .v3d-graphics summary { padding: 8px 1px 5px; color: var(--b-text-dim); font-weight: 600; cursor: pointer; }
+.fws-viewport-menu .v3d-graphics .v3d-field { gap: 3px; margin: 6px 0; color: var(--b-text-dim); }
+.fws-viewport-menu .v3d-graphics :disabled { opacity: .5; cursor: not-allowed; }
+.fws-viewport-menu .v3d-info { margin: 4px 0 6px; color: var(--b-text-faint); font-size: 10px; line-height: 1.45; }
+.fws-viewport-menu .viewport-menu-contribution { display: flex; flex-direction: column; gap: 5px; padding: 7px 0; border-top: 1px solid var(--b-line); }
+.fws-viewport-tool { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 44px; min-height: 42px; padding: 5px; border: 1px solid var(--b-border); border-radius: 4px; background: var(--b-widget); color: var(--b-text); font-family: inherit; font-size: 10px; line-height: 1.1; cursor: pointer; }
+.fws-viewport-tool svg { width: 16px; height: 16px; fill: none; stroke: currentColor; }
+.fws-viewport-tool[aria-pressed=true] { background: var(--b-accent); color: var(--b-bg); }
+.fws-viewport-gizmo { top: 50px; }
+.fws-viewport-gizmo .b-gizmo-axis { border: 1px solid rgba(0,0,0,.55); border-radius: 50%; background: var(--gizmo-axis-color); color: #101010; cursor: pointer; }
+.fws-viewport-gizmo .b-gizmo-axis.is-behind { opacity: .42; }
+.fws-viewport-gizmo .b-gizmo-axis:hover { filter: brightness(1.25); }
+.fws-viewport-gizmo .b-gizmo-center { border: 1px solid #0d0d0d; border-radius: 50%; background: #6a6a6a; color: #1a1a1a; cursor: pointer; }
+.fws-viewport-gizmo .b-gizmo-center:hover { background: #8a8a8a; }
+.b-app.is-preview .fws-viewport-gizmo, .b-app.is-preview .fws-viewport-header .v3d-navigation { display: none; }

@@ -1,5 +1,6 @@
+import {mountSharedGizmoHost,viewportClasses} from '../../../shared/viewport3d-shell.js';
 import * as THREE from 'three';
-import {createViewport3D,mountViewportChrome,discoverViewportEnvironments} from 'framework-preparatorio/scopes/viewport3d';
+import {createViewport3D,mountViewportChrome,mountViewportNavigation,mountViewportGizmo,discoverViewportEnvironments} from 'framework-preparatorio/scopes/viewport3d';
 import {passports} from '../passports.js';
 import plugins from '../../../plugins/viewport3d/index.js';
 
@@ -20,6 +21,7 @@ const readGraphics=()=>{try{return JSON.parse(localStorage.getItem(GRAPHICS_KEY)
 
 /** Prismia supplies its subject; mode/tools and graphics come from the framework. */
 export function activate({node,exchange,services}){
+  const gizmoHost=mountSharedGizmoHost(node.querySelector('[data-v3d-stage]'));
   const view=exchange.channel('view'),graph=exchange.channel('graph'),render=services.renderState;
   const viewport=createViewport3D({THREE,container:node.querySelector('[data-viewport]'),
     cameraOptions:{kind:'perspective',args:[38,1,.05,200]},
@@ -32,7 +34,7 @@ export function activate({node,exchange,services}){
   });
   const saved=readGraphics(), sections=readObject(SECTIONS_KEY),savedEnvironment=readObject(ENVIRONMENT_KEY);
   const shadowOptions=['auto','512','1024','2048','4096','8192'];
-  let chrome=null,studioGrid=null,offView=()=>{},offEnvironment=()=>{},lastShadow=shadowOptions.includes(saved.lastShadow)?saved.lastShadow:'auto';
+  let chrome=null,studioGrid=null,navigation=null,gizmo=null,offView=()=>{},offEnvironment=()=>{},lastShadow=shadowOptions.includes(saved.lastShadow)?saved.lastShadow:'auto';
   const disposeGrid=()=>{if(!studioGrid)return;studioGrid.removeFromParent();studioGrid.geometry.dispose();studioGrid.material.dispose();studioGrid=null;};
   try {
     viewport.registerPlugins([...plugins,...discovered,...services.viewportPlugins]);
@@ -42,7 +44,7 @@ export function activate({node,exchange,services}){
     studioGrid=new THREE.GridHelper(12,24,0x737987,0x4d535c);studioGrid.position.y=.002;
     studioGrid.material.transparent=true;studioGrid.material.opacity=.2;studioGrid.userData.baseMap='studio';viewport.scene.add(studioGrid);
     viewport.onDispose(disposeGrid);
-    chrome=mountViewportChrome({root:node,viewport,ui:services.viewportUi,
+    chrome=mountViewportChrome({root:node,viewport,ui:services.viewportUi,classes:viewportClasses,
       environmentOptions:{environments:discoveredWorlds,studioGrid,gridVisible:typeof savedEnvironment.grid==='boolean'?savedEnvironment.grid:view.value.grid,preserveBackground:true},
       settingsOptions:{sections,onSectionChange:()=>saveObject(SECTIONS_KEY,sections)},
       graphicsOptions:{settings:saved,onChange(settings){
@@ -51,6 +53,22 @@ export function activate({node,exchange,services}){
       // Keep the existing lighting panel in sync with the common controls.
       view.set('exposure',settings.exposure);view.set('shadows',settings.shadow!=='off');
     }}});
+    const current=()=>viewport.getPlugin('prismia-material-preview');
+    const fallbackTarget=new THREE.Vector3(0,.9,0);
+    const orbit={
+      get target(){return current()?.controls.target ?? fallbackTarget;},
+      get minDistance(){return current()?.controls.minDistance ?? .05;},
+      get maxDistance(){return current()?.controls.maxDistance ?? 1000;},
+      zoom(factor){const controls=current()?.controls;if(!controls)return;
+        const offset=viewport.camera.position.clone().sub(controls.target);
+        const distance=Math.max(controls.minDistance,Math.min(controls.maxDistance,offset.length()*factor));
+        viewport.camera.position.copy(controls.target).add(offset.setLength(distance));controls.update();},
+    };
+    const enabled=()=>!!current();
+    navigation=mountViewportNavigation({root:node,viewport,orbit,isEnabled:enabled,
+      fitObject:()=>current()?.subject,invalidate:()=>current()?.controls.update()});
+    gizmo=mountViewportGizmo({host:gizmoHost,THREE,camera:viewport.camera,setView:navigation.setView,
+      isEnabled:enabled,subscribe:fn=>viewport.onRender(fn)});
     const graphics=chrome.graphics,environment=chrome.environment;
     if(view.value.grid!==environment.gridWanted)view.set('grid',environment.gridWanted);
     offEnvironment=environment.onChange(()=>{
@@ -68,7 +86,7 @@ export function activate({node,exchange,services}){
       if((event.kind==='grid'||event.kind==='reset')&&environment.gridWanted!==s.grid)environment.setGrid(s.grid);
     },{immediate:false});
     services.viewport3d=viewport;services.viewportGraphics=graphics;services.viewportEnvironment=environment;services.viewportDisplay=chrome.display;
-  } catch(error) {offView();offEnvironment();chrome?.dispose();disposeGrid();viewport.dispose();throw error;}
-  return ()=>{offView();offEnvironment();chrome.dispose();disposeGrid();viewport.dispose();services.viewport3d=null;services.viewportGraphics=null;services.viewportEnvironment=null;services.viewportDisplay=null;};
+  } catch(error) {offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome?.dispose();disposeGrid();viewport.dispose();throw error;}
+  return ()=>{offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome.dispose();disposeGrid();viewport.dispose();services.viewport3d=null;services.viewportGraphics=null;services.viewportEnvironment=null;services.viewportDisplay=null;};
 }
 export default Object.freeze({...passports.viewport,activate});

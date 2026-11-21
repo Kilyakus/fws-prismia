@@ -110,6 +110,6 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   }
   function snapshot(){viewport.render();renderer.domElement.toBlob(blob=>{if(blob)saveBlob(blob,'prismia-preview.png');},'image/png');}
   function resetCamera(){camera.position.set(3.3,2.6,4.2);controls.target.set(0,.9,0);controls.update();}
-  return {renderer,scene,camera,engine,evaluator,registry,refresh,preview,thumbnail,exampleThumbnail,libraryNodeThumbnail,importGlb,exportMaps,snapshot,resetCamera,
+  return {renderer,scene,camera,controls,get subject(){return sampleRoot;},engine,evaluator,registry,refresh,preview,thumbnail,exampleThumbnail,libraryNodeThumbnail,importGlb,exportMaps,snapshot,resetCamera,
     dispose(){if(disposed)return;disposed=true;importToken++;clearTimeout(refreshTimer);offGraph();offView();offResize();viewport.disconnectResize();viewport.stop();outlines?.dispose();engine.dispose();if(sampleRoot){sampleRoot.removeFromParent();disposeObject(sampleRoot);}disposeTextures(textures);evaluator.dispose();libraryEvaluator?.dispose();scene.remove(floor,hemi,ambient,key,key.target,fill,rim);floor.geometry.dispose();floor.material.dispose();scene.environment=null;disposeEnvironment(renderer);controls.dispose();}};
 }

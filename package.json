@@ -33,15 +33,14 @@
     "test:graphics": "node tests/graphics.browser.cjs && node tests/graphics-mobile.browser.cjs"
   },
   "peerDependencies": {
-    "three": ">=0.186.1 <0.188.0",
-    "framework-preparatorio": ">=1.2.0 <2.0.0"
+    "three": ">=0.186.1 <0.188.0"
   },
   "devDependencies": {
+    "framework-preparatorio": "github:Kilyakus/framework-preparatorio",
     "playwright": "1.57.0",
     "three": "0.186.1",
     "vite": "6.4.6",
-    "vite-plugin-singlefile": "2.3.0",
-    "framework-preparatorio": "git+https://github.com/Kilyakus/framework-preparatorio.git"
+    "vite-plugin-singlefile": "2.3.0"
   },
   "engines": {
     "node": ">=20.19.0"
@@ -53,5 +52,8 @@
     "framework-preparatorio": {
       "optional": true
     }
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
   }
 }
