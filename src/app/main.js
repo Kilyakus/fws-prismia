@@ -46,3 +46,6 @@ export async function bootPrismiaStudio(options = {}) {
   const {createPrismiaStudio} = await import('../studio/studio.js');
   return createPrismiaStudio(options);
 }
+
+// Source-material building blocks are also usable without a registry.
+export {createSourcePbr, createSourceToon, createSourceUnlit} from './engine/prismia/presets/_lib/source-styles.js';

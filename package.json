@@ -30,7 +30,8 @@
     "test:studio": "node tests/designer.browser.cjs && node tests/surface.browser.cjs",
     "test:viewport3d": "node tests/viewport3d.browser.cjs && node tests/viewport-discovery.browser.cjs && node tests/framework-viewport.browser.cjs",
     "test:viewport-settings": "node tests/viewport-settings.browser.cjs",
-    "test:graphics": "node tests/graphics.browser.cjs && node tests/graphics-mobile.browser.cjs"
+    "test:graphics": "node tests/graphics.browser.cjs && node tests/graphics-mobile.browser.cjs",
+    "test:source-preview": "node tests/source-preview.browser.cjs"
   },
   "peerDependencies": {
     "three": ">=0.186.1 <0.188.0"

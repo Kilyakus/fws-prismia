@@ -1,3 +1,4 @@
+import {buildSourceStyle} from '../_lib/source-styles.js';
 import { makeStandard } from "../_lib/materials.js";
 
 /** Physically based surface that keeps the picked colour. */
@@ -9,11 +10,11 @@ export default {
   group: "base",
   order: 2,
   build: (source, ctx) =>
-    makeStandard(source, {
+    buildSourceStyle("pbr", source, ctx, (source, ctx) => makeStandard(source, {
       tag: "pbr",
       roughness: 0.72,
       metalness: 0,
       envMap: ctx?.envMap,
       envMapIntensity: 0.55,
-    }),
+    })),
 };

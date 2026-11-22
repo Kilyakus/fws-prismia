@@ -26,7 +26,7 @@ async function compare(page,a,b){
     for(let y=0;y<A.h;y++)for(let x=0;x<A.w;x++){
       const i=(y*A.w+x)*4;let v=0;for(let k=0;k<3;k++)v+=Math.abs(A.pixels[i+k]-B.pixels[i+k]);
       sum+=v;if(v>5)changed++;
-      if(x>A.w*.38&&x<A.w*.62&&y>A.h*.38&&y<A.h*.62){centerSum+=v;centerN++;}
+      if(x>A.w*.45&&x<A.w*.55&&y>A.h*.45&&y<A.h*.55){centerSum+=v;centerN++;}
     }
     return {mean:sum/(A.w*A.h*3),changed,center:centerSum/(centerN*3)};
   },[a,b]);

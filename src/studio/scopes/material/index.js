@@ -2,7 +2,10 @@ import {passports} from '../passports.js';
 import {SURFACE_PRESETS} from '../../../app/engine/prismia/materials/surface.js';
 import {outputUsage} from '../../../app/engine/prismia/graph/nodes.js';
 export function activate({node,exchange,services}){
-  const graph=exchange.channel('graph'),abort=new AbortController(),signal=abort.signal;
+  const graph=exchange.channel('graph'),view=exchange.channel('view'),abort=new AbortController(),signal=abort.signal;
+  const sourceStyle=node.querySelector('[data-source-style]');
+  sourceStyle.addEventListener('change',()=>{const value=sourceStyle.value;if(value==='graph')view.set('mode','graph');else {view.set('preset',value);view.set('mode','preset');}},{signal});
+  const offView=view.subscribe(s=>{sourceStyle.value=s.mode==='graph'?'graph':s.preset;});
   const style=node.querySelector('[data-surface-style]');
   const custom=document.createElement('option');custom.value='';custom.textContent='Свой вариант';style.append(custom);
   for(const preset of SURFACE_PRESETS){const option=document.createElement('option');option.value=preset.id;option.textContent=preset.label;style.append(option);}
@@ -21,6 +24,6 @@ export function activate({node,exchange,services}){
       if(input.type==='range'){const out=node.querySelector(`[data-surface-output="${input.dataset.surface}"]`);if(out)out.textContent=Number(value).toFixed(Number(input.step)<.01?3:Number(input.step)===1?0:2);services.ui.syncRangeFill(input);}
     }
   });
-  return ()=>{off();abort.abort();};
+  return ()=>{off();offView();abort.abort();};
 }
 export default Object.freeze({...passports.material,activate});

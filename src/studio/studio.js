@@ -1,3 +1,4 @@
+import {migratePreviewLayout} from './layout.js';
 import {createStudio,installRangeFillSupport,syncRangeFill,syncRangeFills,createCustomSelect,resolveConfig,serializeConfig} from 'uix-preparatorio';
 import {mountScopeNodes} from 'framework-preparatorio';
 import {createPrismiaComposition,bindPrismiaComposition} from '../app/registry.js';
@@ -11,17 +12,17 @@ import {compileNodeFragment,validateNodeFragment} from '../app/engine/prismia/gr
 const tab=(...ids)=>({type:'tab-area',widgets:ids,currentIndex:0});
 const wide={type:'split-area',orientation:'horizontal',sizes:[.215,.545,.24],children:[tab('library'),
   {type:'split-area',orientation:'vertical',sizes:[.51,.49],children:[
-    {type:'split-area',orientation:'horizontal',sizes:[.44,.56],children:[tab('preview'),tab('viewport')]},tab('graph','code')]},
+    tab('viewport','preview'),tab('graph','code')]},
   {type:'split-area',orientation:'vertical',sizes:[.54,.46],children:[tab('properties'),tab('outputs','material','lighting','scene')]}]};
 const compact=tab('viewport','preview','graph','library','properties','outputs','material','lighting','scene','code');
 const mode=()=>window.innerWidth<800?'compact':'wide';
 function responsive(studio){
-  let current=mode(),restoring=false;const key=m=>`fws-prismia.panels.${m}.v1`;
+  let current=mode(),restoring=false;const key=m=>`fws-prismia.panels.${m}.v2`;
   function save(){if(restoring||mode()!==current)return;try{localStorage.setItem(key(current),JSON.stringify(serializeConfig(studio.dock.saveLayout().main)));}catch{}}
-  function apply(next,force=false){let config=null;if(!force)try{config=JSON.parse(localStorage.getItem(key(next))||'null');}catch{};config=config|| (next==='compact'?compact:wide);const resolved=resolveConfig(config,studio.panels);if(!resolved)return;restoring=true;try{studio.dock.restoreLayout({main:resolved});for(const [id,p] of Object.entries(studio.panels))if(studio.isAreaVisible(id)&&!studio.dock.contains(p))studio.dock.addWidget(p,{mode:'tab-after',ref:studio.panels.viewport});}finally{restoring=false;}save();}
+  function apply(next,force=false){let config=null;if(!force)try{config=JSON.parse(localStorage.getItem(key(next))||'null');if(!config){const old=JSON.parse(localStorage.getItem(`fws-prismia.panels.${next}.v1`)||'null');if(old)config=migratePreviewLayout(old);}}catch{};config=config|| (next==='compact'?compact:wide);const resolved=resolveConfig(config,studio.panels);if(!resolved)return;restoring=true;try{studio.dock.restoreLayout({main:resolved});for(const [id,p] of Object.entries(studio.panels))if(studio.isAreaVisible(id)&&!studio.dock.contains(p))studio.dock.addWidget(p,{mode:'tab-after',ref:studio.panels.viewport});}finally{restoring=false;}save();}
   const resize=()=>{const next=mode();if(next===current)return;current=next;apply(next);studio.dock.fit();studio.dock.update();};
   studio.dock.layoutModified.connect(save);window.addEventListener('resize',resize);apply(current);
-  return {reset(){for(const m of ['wide','compact'])try{localStorage.removeItem(key(m));}catch{}studio.resetLayout();apply(current,true);},dispose(){save();studio.dock.layoutModified.disconnect(save);window.removeEventListener('resize',resize);}};
+  return {reset(){for(const m of ['wide','compact'])try{localStorage.removeItem(key(m));localStorage.removeItem(`fws-prismia.panels.${m}.v1`);}catch{}studio.resetLayout();apply(current,true);},dispose(){save();studio.dock.layoutModified.disconnect(save);window.removeEventListener('resize',resize);}};
 }
 function download(content,name,type='application/json'){const url=URL.createObjectURL(new Blob([content],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
 

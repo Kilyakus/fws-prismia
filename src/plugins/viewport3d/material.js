@@ -40,7 +40,7 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   const evaluator=new GraphEvaluator(renderer,{onInvalidate:()=>schedule()});const thumbCache=new Map(),exampleCache=new Map();
   registry.addGroup({id:'graph',label:'Материал Prismia'});registry.register({id:'prismia-graph',label:'Материал графа',group:'graph',targets:['preview'],build:()=>createGraphMaterial(textures,graph.value.project.surface)});
   function replaceRoot(root){outlines?.dispose();outlines=null;engine.reset();if(sampleRoot){sampleRoot.removeFromParent();disposeObject(sampleRoot);}sampleRoot=root;root.traverse(n=>{if(n.isMesh){n.castShadow=true;n.receiveShadow=true;}});scene.add(root);applyMaterial();}
-  function applyMaterial(){if(!sampleRoot)return;outlines?.dispose();outlines=null;engine.setSelection('preview','prismia-graph');engine.applyToObject(sampleRoot,{defaultTarget:'preview',force:true});outlines=attachSurfaceOutlines(sampleRoot,graph.value.project.surface);}
+  function applyMaterial(){if(!sampleRoot)return;outlines?.dispose();outlines=null;const state=view.value;engine.setSelection('preview',state.mode==='graph'?'prismia-graph':state.preset);engine.applyToObject(sampleRoot,{defaultTarget:'preview',force:true});if(state.mode==='graph')outlines=attachSurfaceOutlines(sampleRoot,graph.value.project.surface);}
   function syncLook(s){
     looks.set(s.look,{duration:0});const p=LOOK_PROFILES[s.look];renderer.toneMappingExposure=s.exposure;key.intensity=p.key*s.key;hemi.intensity=p.hemi*s.ambient;ambient.intensity=p.ambient*s.ambient;
     const a=s.rotation*Math.PI/180;key.position.set(-3*Math.cos(a)+4*Math.sin(a),5,4*Math.cos(a)+3*Math.sin(a));controls.autoRotate=s.autoRotate;
@@ -68,6 +68,7 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   const offGraph=graph.subscribe((s,event)=>{if(event.kind==='graph'||event.kind==='init'){const next=JSON.stringify(s.project.surface);if(next!==surfaceSignature){surfaceSignature=next;applyMaterial();}schedule();}});
   const offView=view.subscribe((s,event)=>{
     syncLook(s);
+    if(event.kind==='mode'||event.kind==='preset'||event.kind==='reset')applyMaterial();
     if(event.kind==='shape'&&s.shape!=='model')replaceRoot(makeShape(s.shape));
   });
   replaceRoot(makeShape(view.value.shape));syncLook(view.value);
