@@ -33,6 +33,25 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   fill.position.set(4,3,-2);rim.position.set(-3,3,-4);scene.add(hemi,ambient,key,key.target,fill,rim);
   const looks=createLookMixer({scene,renderer,hemiLight:hemi,ambientLight:ambient,keyLight:key,fillLight:fill,rimLight:rim});
   scene.environment=neutralEnvironment(renderer);
+  // Глобальное освещение (IBL + полусфера/эмбиент) управляется из общих
+  // настроек viewport3d через globalLightingAdapter. Направленные источники
+  // не затрагиваются. Полусфера/эмбиент прячутся флагом visible, чтобы
+  // look-mixer мог менять интенсивность без «пробивания» света обратно.
+  let globalLightingEnabled=true,globalLightingIntensity=1,savedEnvironment=scene.environment;
+  function applyGlobalLighting(){
+    if(globalLightingEnabled){
+      if(scene.environment&&scene.environment!==savedEnvironment)savedEnvironment=scene.environment;
+      if(!scene.environment&&savedEnvironment)scene.environment=savedEnvironment;
+      if('environmentIntensity' in scene)scene.environmentIntensity=globalLightingIntensity;
+    }else{
+      if(scene.environment)savedEnvironment=scene.environment;
+      scene.environment=null;
+      if('environmentIntensity' in scene)scene.environmentIntensity=0;
+    }
+    hemi.visible=globalLightingEnabled;ambient.visible=globalLightingEnabled;
+  }
+  function setGlobalLightingEnabled(enabled){globalLightingEnabled=!!enabled;applyGlobalLighting();}
+  function setGlobalLightingIntensity(intensity){const v=Number(intensity);globalLightingIntensity=Number.isFinite(v)?Math.min(3,Math.max(0,v)):1;applyGlobalLighting();}
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(20,20),new THREE.MeshStandardMaterial({color:0x2d3038,roughness:.9}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
   const registry=createPrismiaRegistry(),engine=new ShaderEngine({registry,renderer,targets:['preview'],defaults:{preview:'original'}});
   let sampleRoot=null,outlines=null,textures={},disposed=false,refreshTimer=0,importToken=0,version=0,libraryEvaluator=null,hasTime=false,lastTimeRefresh=0,outputSignature='';
@@ -111,6 +130,6 @@ export function createMaterialPreview(viewport,{graph,view,render}){
   }
   function snapshot(){viewport.render();renderer.domElement.toBlob(blob=>{if(blob)saveBlob(blob,'prismia-preview.png');},'image/png');}
   function resetCamera(){camera.position.set(3.3,2.6,4.2);controls.target.set(0,.9,0);controls.update();}
-  return {renderer,scene,camera,controls,get subject(){return sampleRoot;},engine,evaluator,registry,refresh,preview,thumbnail,exampleThumbnail,libraryNodeThumbnail,importGlb,exportMaps,snapshot,resetCamera,
+  return {renderer,scene,camera,controls,get subject(){return sampleRoot;},engine,evaluator,registry,refresh,preview,thumbnail,exampleThumbnail,libraryNodeThumbnail,importGlb,exportMaps,snapshot,resetCamera,setGlobalLightingEnabled,setGlobalLightingIntensity,applyGlobalLighting,globalLightingSnapshot:()=>({enabled:globalLightingEnabled,intensity:globalLightingIntensity,hasEnvironment:!!scene.environment,environmentIntensity:scene.environmentIntensity??null}),
     dispose(){if(disposed)return;disposed=true;importToken++;clearTimeout(refreshTimer);offGraph();offView();offResize();viewport.disconnectResize();viewport.stop();outlines?.dispose();engine.dispose();if(sampleRoot){sampleRoot.removeFromParent();disposeObject(sampleRoot);}disposeTextures(textures);evaluator.dispose();libraryEvaluator?.dispose();scene.remove(floor,hemi,ambient,key,key.target,fill,rim);floor.geometry.dispose();floor.material.dispose();scene.environment=null;disposeEnvironment(renderer);controls.dispose();}};
 }

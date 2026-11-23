@@ -41,7 +41,13 @@ export function activate({node,exchange,services}){
       shadingOptions:{getObject:()=>viewport.getPlugin('prismia-material-preview')?.subject},
       environmentOptions:{studioColors:{background:0x242834,pedestal:0x667080,grid:{major:0xc5cbd7,minor:0x7c899c}},getGridFocus:()=>viewport.getPlugin('prismia-material-preview')?.subject,environments:discoveredWorlds,gridVisible:typeof savedEnvironment.grid==='boolean'?savedEnvironment.grid:view.value.grid,preserveBackground:true},
       settingsOptions:{sections,onSectionChange:()=>saveObject(SECTIONS_KEY,sections)},
-      graphicsOptions:{settings:saved,onChange(settings){
+      graphicsOptions:{settings:saved,
+        globalLightingAdapter:{
+          setEnabled:enabled=>viewport.getPlugin('prismia-material-preview')?.setGlobalLightingEnabled?.(enabled),
+          setIntensity:intensity=>viewport.getPlugin('prismia-material-preview')?.setGlobalLightingIntensity?.(intensity),
+          snapshot:()=>viewport.getPlugin('prismia-material-preview')?.globalLightingSnapshot?.()??null,
+        },
+        onChange(settings){
       if(settings.shadow!=='off')lastShadow=settings.shadow;
       try{localStorage.setItem(GRAPHICS_KEY,JSON.stringify({...settings,lastShadow}));}catch{/* private browsing */}
       // Keep the existing lighting panel in sync with the common controls.
