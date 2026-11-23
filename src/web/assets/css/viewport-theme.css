@@ -28,13 +28,13 @@
 .fws-viewport-menu .v3d-graphics :disabled { opacity: .5; cursor: not-allowed; }
 .fws-viewport-menu .v3d-info { margin: 4px 0 6px; color: var(--b-text-faint); font-size: 10px; line-height: 1.45; }
 .fws-viewport-menu .viewport-menu-contribution { display: flex; flex-direction: column; gap: 5px; padding: 7px 0; border-top: 1px solid var(--b-line); }
-.fws-viewport-tool { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 44px; min-height: 42px; padding: 5px; border: 1px solid var(--b-border); border-radius: 4px; background: var(--b-widget); color: var(--b-text); font-family: inherit; font-size: 10px; line-height: 1.1; cursor: pointer; }
-.fws-viewport-tool svg { width: 16px; height: 16px; fill: none; stroke: currentColor; }
-.fws-viewport-tool[aria-pressed=true] { background: var(--b-accent); color: var(--b-bg); }
-.fws-viewport-gizmo { top: 50px; }
 .fws-viewport-gizmo .b-gizmo-axis { border: 1px solid rgba(0,0,0,.55); border-radius: 50%; background: var(--gizmo-axis-color); color: #101010; cursor: pointer; }
 .fws-viewport-gizmo .b-gizmo-axis.is-behind { opacity: .42; }
 .fws-viewport-gizmo .b-gizmo-axis:hover { filter: brightness(1.25); }
 .fws-viewport-gizmo .b-gizmo-center { border: 1px solid #0d0d0d; border-radius: 50%; background: #6a6a6a; color: #1a1a1a; cursor: pointer; }
 .fws-viewport-gizmo .b-gizmo-center:hover { background: #8a8a8a; }
 .b-app.is-preview .fws-viewport-gizmo, .b-app.is-preview .fws-viewport-header .v3d-navigation { display: none; }
+
+/* Settings icon follows the same borderless treatment as camera buttons. */
+.fws-viewport-header .v3d-graphics-toggle{width:22px;min-width:22px;height:20px;padding:0;border:1px solid transparent;background:transparent;box-shadow:none}
+.fws-viewport-header .v3d-graphics-toggle:hover{background:var(--b-header-hover);border-color:transparent}

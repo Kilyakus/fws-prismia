@@ -9,13 +9,16 @@
     "./presets": "./src/app/engine/prismia/presets/index.js",
     "./lighting": "./src/app/engine/prismia/lighting/index.js",
     "./package.json": "./package.json",
-    "./scopes": "./api/scopes.js",
+    "./scopes": "./api/studio.js",
     "./shaders": "./src/app/main.js",
-    "./graph": "./api/graph.js",
-    "./materials": "./api/materials.js",
+    "./graph": "./api/engine.js",
+    "./materials": "./api/engine.js",
     "./studio": "./api/studio.js",
     "./styles.css": "./src/web/assets/css/designer.css",
-    "./material-builders": "./src/app/engine/prismia/presets/_lib/materials.js"
+    "./material-builders": "./src/app/engine/prismia/presets/_lib/materials.js",
+    "./engine": "./api/engine.js",
+    "./api/engine.js": "./api/engine.js",
+    "./api/studio.js": "./api/studio.js"
   },
   "files": [
     "api/",

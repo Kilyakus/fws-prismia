@@ -34,18 +34,12 @@ export function activate({node,exchange,services}){
   });
   const saved=readGraphics(), sections=readObject(SECTIONS_KEY),savedEnvironment=readObject(ENVIRONMENT_KEY);
   const shadowOptions=['auto','512','1024','2048','4096','8192'];
-  let chrome=null,studioGrid=null,navigation=null,gizmo=null,offView=()=>{},offEnvironment=()=>{},lastShadow=shadowOptions.includes(saved.lastShadow)?saved.lastShadow:'auto';
-  const disposeGrid=()=>{if(!studioGrid)return;studioGrid.removeFromParent();studioGrid.geometry.dispose();studioGrid.material.dispose();studioGrid=null;};
+  let chrome=null,navigation=null,gizmo=null,offView=()=>{},offEnvironment=()=>{},lastShadow=shadowOptions.includes(saved.lastShadow)?saved.lastShadow:'auto';
   try {
     viewport.registerPlugins([...plugins,...discovered,...services.viewportPlugins]);
-    // Preserve Prismia's established finite preview grid while the common
-    // Studio environment owns selection and visibility. Other hosts get the
-    // shared shader grid automatically; borrowed assets remain host-owned.
-    studioGrid=new THREE.GridHelper(12,24,0x737987,0x4d535c);studioGrid.position.y=.002;
-    studioGrid.material.transparent=true;studioGrid.material.opacity=.2;studioGrid.userData.baseMap='studio';viewport.scene.add(studioGrid);
-    viewport.onDispose(disposeGrid);
     chrome=mountViewportChrome({root:node,viewport,ui:services.viewportUi,classes:viewportClasses,
-      environmentOptions:{environments:discoveredWorlds,studioGrid,gridVisible:typeof savedEnvironment.grid==='boolean'?savedEnvironment.grid:view.value.grid,preserveBackground:true},
+      shadingOptions:{getObject:()=>viewport.getPlugin('prismia-material-preview')?.subject},
+      environmentOptions:{studioColors:{background:0x242834,pedestal:0x667080,grid:{major:0xc5cbd7,minor:0x7c899c}},getGridFocus:()=>viewport.getPlugin('prismia-material-preview')?.subject,environments:discoveredWorlds,gridVisible:typeof savedEnvironment.grid==='boolean'?savedEnvironment.grid:view.value.grid,preserveBackground:true},
       settingsOptions:{sections,onSectionChange:()=>saveObject(SECTIONS_KEY,sections)},
       graphicsOptions:{settings:saved,onChange(settings){
       if(settings.shadow!=='off')lastShadow=settings.shadow;
@@ -86,7 +80,7 @@ export function activate({node,exchange,services}){
       if((event.kind==='grid'||event.kind==='reset')&&environment.gridWanted!==s.grid)environment.setGrid(s.grid);
     },{immediate:false});
     services.viewport3d=viewport;services.viewportGraphics=graphics;services.viewportEnvironment=environment;services.viewportDisplay=chrome.display;
-  } catch(error) {offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome?.dispose();disposeGrid();viewport.dispose();throw error;}
-  return ()=>{offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome.dispose();disposeGrid();viewport.dispose();services.viewport3d=null;services.viewportGraphics=null;services.viewportEnvironment=null;services.viewportDisplay=null;};
+  } catch(error) {offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome?.dispose();viewport.dispose();throw error;}
+  return ()=>{offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome.dispose();viewport.dispose();services.viewport3d=null;services.viewportGraphics=null;services.viewportEnvironment=null;services.viewportDisplay=null;};
 }
 export default Object.freeze({...passports.viewport,activate});

@@ -6,7 +6,7 @@ const {resolve}=require('node:path');
  let browser,server;
  try{
   const {createServer}=await import('vite');
-  server=await createServer({root:resolve(__dirname,'..'),configFile:false,appType:'custom',logLevel:'silent',server:{host:'127.0.0.1',port:0}});
+  server=await createServer({root:resolve(__dirname,'..'),configFile:false,appType:'custom',logLevel:'silent',server:{host:'127.0.0.1',port:0},optimizeDeps:{force:true}});
   server.middlewares.use((req,res,next)=>{
     if(req.url!=='/__viewport-test')return next();
     res.setHeader('Content-Type','text/html');res.end('<!doctype html><meta charset="utf-8"><div id="host" style="width:600px;height:400px"></div>');
@@ -20,9 +20,7 @@ const {resolve}=require('node:path');
   await page.addStyleTag({url:url+'/node_modules/uix-preparatorio/src/web/assets/css/components.css'});
   await page.addStyleTag({url:url+'/node_modules/framework-preparatorio/src/web/assets/css/viewport3d.css'});
   await page.evaluate(async()=>{
-    const THREE=await import('/node_modules/three/build/three.module.js');
-    const {createCustomSelect,syncRangeFill}=await import('/node_modules/uix-preparatorio/src/app/main.js');
-    const {createViewport3DScope}=await import('/node_modules/framework-preparatorio/src/studio/scopes/viewport3d/index.js');
+    const {THREE,createCustomSelect,syncRangeFill,createViewport3DScope}=await import('/tests/framework-viewport-imports.js');
     const scope=createViewport3DScope({enabled:true}),host=document.querySelector('#host');host.innerHTML=scope.template;
     window.__orbitChanges=0;window.__invalidations=0;window.__hostInvalidations=0;window.__assetDisposals=0;window.__externalEnable=true;
     window.__builtin=scope.activate({node:host.querySelector('[data-viewport3d-scope]'),viewport3d:{
@@ -40,6 +38,10 @@ const {resolve}=require('node:path');
     }});
   });
   await page.waitForFunction(()=>window.__builtin?.viewport3d.renderer.info.render.frame>0,null,{timeout:30000});
+  assert(await page.locator('[data-shading=wire]').isDisabled());
+  await page.evaluate(()=>{const v=__builtin.viewport3d;window.__cube=v.scene.children.find(o=>o.isMesh&&o.geometry.type==='BoxGeometry');v.setActiveObject(__cube)});
+  await page.locator('[data-shading=wire]').click();assert(await page.evaluate(()=>__cube.material.wireframe));
+  assert(await page.locator('[data-shading=rig]').isDisabled());await page.locator('[data-shading=solid]').click();assert.equal(await page.evaluate(()=>__cube.material.wireframe),false);
   const mode=page.locator('[data-v3d-mode-host] [role="combobox"]');
   assert.equal(await page.locator('[data-v3d-mode-host] select').count(),0);
   await mode.click();
@@ -77,8 +79,8 @@ const {resolve}=require('node:path');
   assert.deepEqual(await page.evaluate(()=>__builtin.viewport3d.camera.position.toArray()),after,'host may suspend orbit input');
   await page.locator('[data-v3d-graphics-toggle]').click();assert(await page.locator('[data-v3d-graphics-panel]').isVisible());
   assert.equal(await page.locator('[data-v3d-graphics] select').count(),0);
-  assert.equal(await page.locator('[data-v3d-graphics] input[type="range"]').count(),7);
-  assert.equal(await page.locator('[data-v3d-graphics] .range-row input[type="range"]').count(),7);
+  assert.equal(await page.locator('[data-v3d-graphics] input[type="range"]').count(),9);
+  assert.equal(await page.locator('[data-v3d-graphics] .range-row input[type="range"]').count(),9);
   assert.match(await page.locator('[data-v3d-setting="renderScale"]').evaluate(el=>el.style.getPropertyValue('--range-fill')),/13\.33%/);
   const track=await page.locator('[data-v3d-setting="renderScale"]').evaluate(el=>({appearance:getComputedStyle(el).appearance,height:getComputedStyle(el).height,
     rule:[...document.styleSheets].flatMap(sheet=>[...sheet.cssRules]).some(rule=>rule.selectorText?.includes('.range-row')&&rule.selectorText.includes('::-webkit-slider-runnable-track')&&rule.style?.background.includes('--range-fill'))}));
@@ -97,9 +99,7 @@ const {resolve}=require('node:path');
   assert.equal(await page.locator('body > [data-v3d-graphics-panel]').count(),0);
   assert.equal(await page.locator('[data-v3d-graphics]').count(),0);assert.equal(await page.locator('[data-v3d-mode-host] [role=combobox]').count(),0);
   const rollback=await page.evaluate(async()=>{
-    const THREE=await import('/node_modules/three/build/three.module.js');
-    const {createCustomSelect,syncRangeFill}=await import('/node_modules/uix-preparatorio/src/app/main.js');
-    const {createViewport3DScope}=await import('/node_modules/framework-preparatorio/src/studio/scopes/viewport3d/index.js');
+    const {THREE,createCustomSelect,syncRangeFill,createViewport3DScope}=await import('/tests/framework-viewport-imports.js');
     const scope=createViewport3DScope({enabled:true}),host=document.querySelector('#host');host.innerHTML=scope.template;
     let count=0,error='';
     try{scope.activate({node:host.querySelector('[data-viewport3d-scope]'),viewport3d:{THREE,loop:false,ui:{syncRangeFill,createCustomSelect(config){if(++count===4)throw Error('test ui failure');return createCustomSelect(config);}}}});}catch(e){error=e.message;}

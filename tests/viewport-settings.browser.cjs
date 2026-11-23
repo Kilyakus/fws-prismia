@@ -24,7 +24,7 @@ const PROJECT='prismia';
    return {current:app.viewportEnvironment.currentId,grid:app.viewportEnvironment.gridWanted,visible:app.viewportEnvironment.grid.visible,gridType:app.viewportEnvironment.grid.type,children:app.viewport3d.scene.children.filter(x=>x.userData?.baseMap==='studio').length};},PROJECT);
   assert.equal(result.current,'studio');assert.equal(result.children,1);
   assert.equal(result.grid,PROJECT==='prismia');assert.equal(result.visible,result.grid);
-  if(PROJECT==='prismia')assert.equal(result.gridType,'GridHelper','the host preview retains its established grid appearance');
+  if(PROJECT==='prismia')assert.equal(result.gridType,'Mesh','Prismia uses the shared Studio shader grid');
   const grid=page.locator('[data-v3d-display-control="floor-grid"]');
   const frameBefore=await page.evaluate(project=>(project==='evolvia'?window.__sphereDebug:window.__prismiaDebug).viewport3d.renderer.info.render.frame,PROJECT);
   if(PROJECT==='evolvia')await grid.check();else await grid.uncheck();

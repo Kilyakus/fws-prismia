@@ -12,7 +12,7 @@ test('public package entry points expose a single Prismia implementation', async
   const pkg=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8'));
   assert.equal(PRISMIA_VERSION,pkg.version);
   assert.deepEqual(Object.keys(pkg.exports).sort(),[
-    '.', './graph', './lighting', './material-builders', './materials', './package.json', './presets',
+    '.', './engine', './api/engine.js', './api/studio.js', './graph', './lighting', './material-builders', './materials', './package.json', './presets',
     './scopes', './shaders', './studio', './styles.css',
   ].sort());
   const root=await import('fws-prismia'), shaders=await import('fws-prismia/shaders');

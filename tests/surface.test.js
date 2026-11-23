@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {SURFACE_SCHEMA,SURFACE_DEFAULTS,SURFACE_PRESETS,listSurfacePresets,createSurfacePreset,validateSurface,createSurfaceMaterial,attachSurfaceOutlines,MATERIAL_PRESETS,listMaterialPresets,createMaterialPreset} from '../api/materials.js';
-import {createEmptyProject,createGraphStore,validateProject,OUTPUT_USAGES,OUTPUT_LABELS,NODE_TYPES,createGraphMaterial} from '../api/graph.js';
+import {SURFACE_SCHEMA,SURFACE_DEFAULTS,SURFACE_PRESETS,listSurfacePresets,createSurfacePreset,validateSurface,createSurfaceMaterial,attachSurfaceOutlines,MATERIAL_PRESETS,listMaterialPresets,createMaterialPreset} from '../api/engine.js';
+import {createEmptyProject,createGraphStore,validateProject,OUTPUT_USAGES,OUTPUT_LABELS,NODE_TYPES,createGraphMaterial} from '../api/engine.js';
 import {collectShaderEntries} from '../src/app/engine/prismia/materials/collect.js';
 
 test('surface styles and ready materials are generic, editable independent data',()=>{

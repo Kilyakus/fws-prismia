@@ -136,21 +136,21 @@ stop();
 prismia.destroy();
 ```
 
-`fws-prismia/scopes` экспортирует паспорта десяти областей, composition/bind,
+`fws-prismia/studio` экспортирует паспорта десяти областей, composition/bind,
 state и `createScopeExchange`; взаимодействие идёт через `graph`, `view` и
 `render`, команды каналов ограничены явными списками. Реализация каждой области
 получает контекст и возвращает функцию освобождения. Собственную composition
 можно передать при создании. Публичный `fws-prismia/shaders` предоставляет тот же API, что и корневой
-`fws-prismia`; `fws-prismia/graph` предоставляет узлы, проверку и вычислитель.
+`fws-prismia`; `fws-prismia/engine` предоставляет узлы, проверку и вычислитель.
 Все указанные входы включены в npm-архив; пакет пока приватный и не опубликован.
 
 ### Редактируемые материалы и применение в хосте
 
 ```js
 import { listMaterialPresets, createMaterialPreset, listSurfacePresets,
-         createSurfacePreset, attachSurfaceOutlines } from 'fws-prismia/materials';
+         createSurfacePreset, attachSurfaceOutlines } from 'fws-prismia/engine';
 import { createGraphStore, GraphEvaluator, createOutputTextures,
-         createGraphMaterial } from 'fws-prismia/graph';
+         createGraphMaterial } from 'fws-prismia/engine';
 
 console.log(listMaterialPresets()); // id, название, описание; 15 заготовок
 console.log(listSurfacePresets());  // 6 настраиваемых стилей
@@ -374,3 +374,7 @@ PBR, Toon или Unlit. Для загруженного GLB варианты и�
 «3D Просмотр» и «2D Просмотр» находятся в одной группе вкладок; 3D выбран
 по умолчанию. Старые раскладки мигрируют при первом запуске, а последующие
 пользовательские перемещения сохраняются как обычно.
+
+Каталог `api/` содержит `engine.js` и `studio.js`; старые пакетные подпути
+`graph`, `materials`, `scopes` сохранены как алиасы. Studio загружается лениво,
+поэтому импорт состояния областей не требует браузерного DOM.
