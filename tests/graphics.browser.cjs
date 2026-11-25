@@ -32,7 +32,8 @@ async function selected(page,selector){return page.locator(selector).evaluate(el
   assert.equal(await page.locator('[data-v3d-graphics] select').count(),0);
   assert.deepEqual(await page.locator('[data-v3d-tool-host] button:visible').allTextContents(),['Обзор']);
   const rail=await page.locator('[data-v3d-tool-host]').boundingBox(),label=await page.locator('.p-viewport-overlay span:first-child').boundingBox();
-  assert(rail.y>=label.y+label.height,'tool rail does not cover the subject label');
+  const covered=rail.x<label.x+label.width&&rail.x+rail.width>label.x&&rail.y<label.y+label.height&&rail.y+rail.height>label.y;
+  assert(!covered,'tool rail does not cover the subject label');
   await page.locator('[data-v3d-graphics-toggle]').click();
   await page.locator('[data-v3d-graphics]').waitFor({state:'visible'});
   const firstBounds=await page.locator('[data-v3d-graphics-panel]').evaluate(el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:innerHeight};});
@@ -66,7 +67,7 @@ async function selected(page,selector){return page.locator(selector).evaluate(el
   await page.locator('[data-v3d-setting="renderScale"]').evaluate(el=>{el.value='0.65';el.dispatchEvent(new Event('input',{bubbles:true}));});
   await page.locator('[data-v3d-setting="exposure"]').evaluate(el=>{el.value='1.6';el.dispatchEvent(new Event('input',{bubbles:true}));});
   const exposure=page.locator('[data-v3d-setting="exposure"]');
-  assert.equal(await page.locator('[data-v3d-graphics] .range-row input[type="range"]').count(),7);
+  assert.equal(await page.locator('[data-v3d-graphics] .range-row input[type="range"]').count(),9);
   assert.equal(await exposure.evaluate(el=>el.style.getPropertyValue('--range-fill')),'50.00%');
   await exposure.focus();await page.keyboard.press('ArrowRight');
   assert.equal(await page.evaluate(()=>__prismiaDebug.viewportGraphics.value.exposure),1.61);

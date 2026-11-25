@@ -1,7 +1,7 @@
 /**
- * FWS Prismia public WebGL API. Material mechanics, registry, catalog,
- * directional shadow volume and light looks have no dependency on Morphia UI.
- * See README.md for integration and ownership details.
+ * FWS Prismia public WebGL API: material mechanics, registry, catalog,
+ * directional shadow volume and light looks. Engine imports stay DOM-free;
+ * see README.md for integration and ownership details.
  */
 
 export {
@@ -39,7 +39,7 @@ export { DirectionalShadowVolume, LOOK_PROFILES, createLookMixer } from "./engin
 // Standard composable surface toolkit.
 export {SURFACE_SCHEMA,SURFACE_DEFAULTS,SURFACE_PRESETS,listSurfacePresets,createSurfacePreset,validateSurface,createSurfaceMaterial,attachSurfaceOutlines} from './engine/prismia/materials/surface.js';
 export {MATERIAL_PRESETS,listMaterialPresets,createMaterialPreset} from './engine/prismia/materials/material-presets.js';
-export const PRISMIA_VERSION = "1.0.0";
+export const PRISMIA_VERSION = "1.1.0";
 
 /** Browser hosts explicitly opt into the Studio; pure engine imports remain DOM-free. */
 export async function bootPrismiaStudio(options = {}) {

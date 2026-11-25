@@ -4,15 +4,14 @@ const {pathToFileURL}=require('node:url');
 const {resolve}=require('node:path');
 const assert=require('node:assert/strict');
 (async()=>{
- const evolvia=require('../package.json').name==='fws-evolvia',debug=evolvia?'__sphereDebug':'__prismiaDebug';
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox','--disable-dev-shm-usage','--use-angle=swiftshader','--enable-unsafe-swiftshader','--js-flags=--max-old-space-size=384']});
  try{
   const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1,isMobile:true,hasTouch:true,reducedMotion:'reduce'}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(pathToFileURL(resolve(__dirname,'../standalone/index.html')).href+'?debug=1',{waitUntil:'domcontentloaded'});
-  await page.waitForFunction(name=>window[name]?.viewport3d?.renderer.info.render.frame>0,debug,{timeout:120000});
+  await page.waitForFunction(()=>window.__prismiaDebug?.viewport3d?.renderer.info.render.frame>0,null,{timeout:120000});
   const mode=page.locator('[data-v3d-mode-host] [role="combobox"]');assert(await mode.isVisible());
-  assert.equal(await page.locator(evolvia?'.sphere-area-viewport > .b-header':'.prismia-area-viewport > .b-header').isVisible(),false);
+  assert.equal(await page.locator('.prismia-area-viewport > .b-header').isVisible(),false);
   await mode.tap();
   let menu=page.locator('.prep-select-menu:visible');
   assert.match(await menu.locator('[data-value="view"] .prep-select-option-description').textContent(),/обзор сцены/i);
@@ -29,14 +28,14 @@ const assert=require('node:assert/strict');
   assert(bounds.left>=0&&bounds.top>=0&&bounds.right<=bounds.width&&bounds.bottom<=bounds.height,JSON.stringify(bounds));
   assert(await menu.locator('[data-value="reinhard"] .prep-select-option-description').isVisible());
   await menu.locator('[data-value="reinhard"]').tap();assert(await panel.isVisible());
-  assert.equal(await page.evaluate(name=>window[name].viewportGraphics.value.toneMapping,debug),'reinhard');
+  assert.equal(await page.evaluate(()=>window.__prismiaDebug.viewportGraphics.value.toneMapping),'reinhard');
   const slider=page.locator('[data-v3d-setting="exposure"]');await slider.scrollIntoViewIfNeeded();
   const box=await slider.boundingBox();await slider.tap({position:{x:Math.floor(box.width*.72),y:Math.floor(box.height/2)}});
   const track=await slider.evaluate(el=>({value:Number(el.value),fill:el.style.getPropertyValue('--range-fill'),appearance:getComputedStyle(el).appearance}));
   assert.equal(track.appearance,'none');assert(Number.parseFloat(track.fill)>60);assert(track.value>1.5);
-  assert.equal(await page.evaluate(name=>window[name].viewportGraphics.value.exposure,debug),track.value);
-  await page.evaluate(name=>window[name].destroy(),debug);
+  assert.equal(await page.evaluate(()=>window.__prismiaDebug.viewportGraphics.value.exposure),track.value);
+  await page.evaluate(()=>window.__prismiaDebug.destroy());
   assert.equal(await page.locator('.prep-select-menu').count(),0);assert.deepEqual(errors,[]);
-  console.log(`${evolvia?'Evolvia':'Prismia'}: narrow touch viewport, described menu, library slider and teardown PASS`);
+  console.log('Prismia: narrow touch viewport, described menu, library slider and teardown PASS');
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
