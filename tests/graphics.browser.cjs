@@ -31,9 +31,10 @@ async function selected(page,selector){return page.locator(selector).evaluate(el
   assert.equal(await page.locator('.v3d-title').count(),0);
   assert.equal(await page.locator('[data-v3d-graphics] select').count(),0);
   assert.deepEqual(await page.locator('[data-v3d-tool-host] button:visible').allTextContents(),['Обзор']);
-  const rail=await page.locator('[data-v3d-tool-host]').boundingBox(),label=await page.locator('.p-viewport-overlay span:first-child').boundingBox();
-  const covered=rail.x<label.x+label.width&&rail.x+rail.width>label.x&&rail.y<label.y+label.height&&rail.y+rail.height>label.y;
-  assert(!covered,'tool rail does not cover the subject label');
+  assert.equal(await page.locator('[data-v3d-status-item="live"]').textContent(),'LIVE MATERIAL');
+  assert.equal(await page.locator('[data-v3d-status-item="subject"]').textContent(),'Сфера');
+  assert.equal(await page.locator('[data-v3d-status-item="help"]').textContent(),'ЛКМ — вращение · колесо — масштаб');
+  assert(await page.locator('.v3d-header [data-snapshot]').isVisible(),'viewport actions live in the shared header');
   await page.locator('[data-v3d-graphics-toggle]').click();
   await page.locator('[data-v3d-graphics]').waitFor({state:'visible'});
   const firstBounds=await page.locator('[data-v3d-graphics-panel]').evaluate(el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:innerHeight};});

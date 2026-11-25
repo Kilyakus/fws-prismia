@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "description": "FWS Prismia — independent WebGL shader engine, material presets and studio",
   "type": "module",
+  "license": "MIT",
   "exports": {
     ".": "./src/app/main.js",
     "./presets": "./src/app/engine/prismia/presets/index.js",
@@ -23,6 +24,7 @@
     "api/",
     "src/",
     "README.md",
+    "INSTRUCTION.md",
     "THIRD_PARTY_NOTICES.txt"
   ],
   "scripts": {

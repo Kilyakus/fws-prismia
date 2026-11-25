@@ -1,6 +1,6 @@
 import {mountSharedGizmoHost,viewportClasses} from '../../../shared/viewport3d-shell.js';
 import * as THREE from 'three';
-import {createViewport3D,mountViewportChrome,mountViewportNavigation,mountViewportGizmo,discoverViewportEnvironments} from 'framework-preparatorio/scopes/viewport3d';
+import {createViewport3D,mountViewportChrome,mountViewportNavigation,mountViewportGizmo,mountViewportStatus,discoverViewportEnvironments} from 'framework-preparatorio/scopes/viewport3d';
 import {passports} from '../passports.js';
 import plugins from '../../../plugins/viewport3d/index.js';
 
@@ -34,7 +34,7 @@ export function activate({node,exchange,services}){
   });
   const saved=readGraphics(), sections=readObject(SECTIONS_KEY),savedEnvironment=readObject(ENVIRONMENT_KEY);
   const shadowOptions=['auto','512','1024','2048','4096','8192'];
-  let chrome=null,navigation=null,gizmo=null,offView=()=>{},offEnvironment=()=>{},lastShadow=shadowOptions.includes(saved.lastShadow)?saved.lastShadow:'auto';
+  let chrome=null,navigation=null,gizmo=null,status=null,offView=()=>{},offEnvironment=()=>{},lastShadow=shadowOptions.includes(saved.lastShadow)?saved.lastShadow:'auto';
   try {
     viewport.registerPlugins([...plugins,...discovered,...services.viewportPlugins]);
     chrome=mountViewportChrome({root:node,viewport,ui:services.viewportUi,classes:viewportClasses,
@@ -69,6 +69,19 @@ export function activate({node,exchange,services}){
       fitObject:()=>current()?.subject,invalidate:()=>current()?.controls.update()});
     gizmo=mountViewportGizmo({host:gizmoHost,THREE,camera:viewport.camera,setView:navigation.setView,
       isEnabled:enabled,subscribe:fn=>viewport.onRender(fn)});
+    const SUBJECT_NAMES={sphere:'Сфера',torus:'Тор',cube:'Куб',plane:'Плоскость',model:'GLB модель'};
+    status=mountViewportStatus({
+      root:node.querySelector('[data-v3d-status]'),viewport,
+      getActiveObject:()=>current()?.subject??null,
+      getContext:()=>({shape:view.value.shape}),
+      layers:[{groups:[{id:'subject-meta',row:0,side:'left',order:10,separator:' · '}],items:[
+        {id:'live',group:'subject-meta',text:'LIVE MATERIAL',title:'Материал графа пересчитывается в реальном времени'},
+        {id:'subject',group:'subject-meta',text:({shape})=>SUBJECT_NAMES[shape]??'Сфера',title:'Активный объект сцены'},
+        {id:'position',text:({viewport:vp})=>{const p=vp.camera?.position;if(!p)return null;
+          const n=v=>Math.abs(v)<.005?'0.00':v.toFixed(2);return `XYZ ${n(p.x)}  ${n(p.y)}  ${n(p.z)}`;},title:'Позиция камеры'},
+        {id:'help',row:0,side:'left',order:50,text:'ЛКМ — вращение · колесо — масштаб',title:'Управление камерой в области просмотра'},
+      ]}],
+    });
     const graphics=chrome.graphics,environment=chrome.environment;
     if(view.value.grid!==environment.gridWanted)view.set('grid',environment.gridWanted);
     offEnvironment=environment.onChange(()=>{
@@ -84,9 +97,10 @@ export function activate({node,exchange,services}){
       if(event.kind==='shadows'||event.kind==='reset')graphics.set({shadow:s.shadows?lastShadow:'off'});
       if(event.kind==='shape')graphics.refresh();
       if((event.kind==='grid'||event.kind==='reset')&&environment.gridWanted!==s.grid)environment.setGrid(s.grid);
+      if(event.kind==='shape'||event.kind==='reset')status?.update();
     },{immediate:false});
     services.viewport3d=viewport;services.viewportGraphics=graphics;services.viewportEnvironment=environment;services.viewportDisplay=chrome.display;
-  } catch(error) {offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome?.dispose();viewport.dispose();throw error;}
-  return ()=>{offView();offEnvironment();gizmo?.dispose();navigation?.dispose();chrome.dispose();viewport.dispose();services.viewport3d=null;services.viewportGraphics=null;services.viewportEnvironment=null;services.viewportDisplay=null;};
+  } catch(error) {offView();offEnvironment();status?.dispose();gizmo?.dispose();navigation?.dispose();chrome?.dispose();viewport.dispose();throw error;}
+  return ()=>{offView();offEnvironment();status?.dispose();gizmo?.dispose();navigation?.dispose();chrome.dispose();viewport.dispose();services.viewport3d=null;services.viewportGraphics=null;services.viewportEnvironment=null;services.viewportDisplay=null;};
 }
 export default Object.freeze({...passports.viewport,activate});

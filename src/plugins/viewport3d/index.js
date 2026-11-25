@@ -21,7 +21,6 @@ export const cameraTools = Object.freeze({
     node.querySelector('[data-rotate]').addEventListener('click',()=>view.set('autoRotate',!view.value.autoRotate),{signal});
     defer(view.subscribe(s=>{
       node.querySelector('[data-rotate]').setAttribute('aria-pressed',String(s.autoRotate));
-      node.querySelector('[data-viewport-name]').textContent=({sphere:'Сфера',torus:'Тор',cube:'Куб',plane:'Плоскость',model:'GLB модель'})[s.shape];
     }));
   },
 });
